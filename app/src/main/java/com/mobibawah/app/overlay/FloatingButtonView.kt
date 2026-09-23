@@ -100,14 +100,14 @@ class FloatingButtonView(
             }
             ActionType.HOLD -> {
                 when (event.action) {
-                    MotionEvent.ACTION_DOWN -> { service.startHold(mapping.id, tx, ty); alpha = 0.5f }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> { service.endHold(mapping.id); alpha = 1f }
+                    MotionEvent.ACTION_DOWN -> { service.startTouch(mapping.id, tx, ty); alpha = 0.5f }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> { service.endTouch(mapping.id); alpha = 1f }
                 }
             }
             ActionType.TOGGLE -> {
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     toggledOn = !toggledOn
-                    if (toggledOn) service.startHold(mapping.id, tx, ty) else service.endHold(mapping.id)
+                    if (toggledOn) service.startTouch(mapping.id, tx, ty) else service.endTouch(mapping.id)
                     refreshBackground()
                 }
             }

@@ -43,5 +43,10 @@ data class MappingProfile(
     var touchpadY: Float = 0.55f,
     var touchpadWidth: Float = 0.35f,
     var touchpadHeight: Float = 0.30f,
-    var mouseSensitivity: Float = 1.2f
+    var mouseSensitivity: Float = 1.2f,
+    // Path absolut file gambar HUD/screenshot game (disalin ke penyimpanan
+    // internal aplikasi) yang dipakai sebagai acuan visual saat mengatur
+    // posisi tombol di MappingEditorActivity. Hanya dipakai saat mengedit —
+    // tidak ikut ditampilkan saat overlay berjalan di atas game asli.
+    var hudImagePath: String? = null
 )

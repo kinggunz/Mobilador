@@ -5,21 +5,57 @@
     android:orientation="vertical"
     android:background="@color/bg">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="Geser tombol untuk atur posisi. Tekan tombol untuk ganti key / ukuran / hapus."
-        android:textColor="#AAAAAA"
-        android:textSize="12sp" />
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="8dp"
+        android:gravity="center_vertical">
 
-    <!-- Area pratinjau layar game, tempat semua tombol overlay ditampilkan -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Geser tombol untuk atur posisi. Tekan tombol untuk ganti key/ukuran/hapus."
+            android:textColor="#AAAAAA"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/btnPilihHud"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="Pilih Gambar HUD" />
+
+        <Button
+            android:id="@+id/btnHapusHud"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="Hapus" />
+    </LinearLayout>
+
+    <!-- Area pratinjau layar game (SELALU landscape, mengikuti orientasi
+         activity ini), tempat gambar HUD custom + semua tombol overlay
+         ditampilkan bertumpuk. -->
     <FrameLayout
         android:id="@+id/previewArea"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#000000" />
+        android:background="#000000">
+
+        <ImageView
+            android:id="@+id/imgHud"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="Gambar HUD acuan mapping" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

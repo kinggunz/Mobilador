@@ -6,6 +6,26 @@ tombol mengambang yang posisi & ukurannya bisa diatur sendiri.
 
 Mendukung **Android 8.0 (API 26) sampai Android 15 (API 35)**.
 
+## Fitur terbaru
+
+- **Icon aplikasi** custom (adaptive icon, gaya WASD + kursor mouse).
+- **Gambar HUD custom**: di layar "Atur Mapping Tombol", tombol **Pilih
+  Gambar HUD** membuka galeri — pilih screenshot HUD game kamu, lalu semua
+  tombol bisa ditempatkan **tepat di atas** tombol virtual asli di gambar
+  itu. Gambar disalin ke penyimpanan internal aplikasi (tidak perlu izin
+  penyimpanan tambahan), tersimpan per-game, dan bisa dihapus lewat tombol
+  **Hapus**.
+- **Touchpad mouse drag kontinu**: geser layar sekarang benar-benar berupa
+  satu sentuhan yang ditahan & digerakkan terus (bukan tap-tap terputus),
+  jadi terasa seperti drag asli untuk kamera/scroll peta.
+- **Landscape wajib**: `MainActivity` dan `MappingEditorActivity` dikunci
+  `screenOrientation="landscape"`. Ini penting — posisi X/Y tombol dihitung
+  sebagai persentase dari lebar/tinggi layar saat itu; kalau editor boleh
+  portrait sementara overlay sungguhan selalu landscape (karena game-nya
+  landscape), sumbu lebar/tinggi jadi tertukar dan tombol meleset. Dengan
+  keduanya dikunci landscape, apa yang kamu atur di editor **dijamin sama
+  persis** posisinya saat overlay berjalan di atas game.
+
 ## ⚠️ Batasan teknis penting
 
 Tanpa akses root, Android **tidak mengizinkan** aplikasi mengirim `KeyEvent`

@@ -1,13 +1,16 @@
 package com.mobibawah.app.ui
 
 import android.app.AlertDialog
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.mobibawah.app.R
 import com.mobibawah.app.data.ProfileRepository
@@ -15,12 +18,25 @@ import com.mobibawah.app.model.ButtonMapping
 import com.mobibawah.app.model.KeyCatalog
 import com.mobibawah.app.model.MappingProfile
 import com.mobibawah.app.overlay.FloatingButtonView
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * Layar "Atur Mapping Tombol". Berjalan sebagai activity biasa (bukan
  * overlay window) sehingga tidak perlu izin SYSTEM_ALERT_WINDOW hanya
- * untuk mengedit — cukup pratinjau di dalam kotak previewArea yang
- * proporsinya diperlakukan seperti layar penuh.
+ * untuk mengedit — cukup pratinjau di dalam kotak previewArea.
+ *
+ * WAJIB landscape (dikunci lewat AndroidManifest): previewArea di sini
+ * merepresentasikan layar game yang juga selalu landscape saat overlay
+ * sungguhan berjalan, supaya posisi & ukuran yang kamu atur di sini persis
+ * sama saat dipasang di atas game — tidak ada tombol yang meleset/bug
+ * gara-gara orientasi berbeda antara mode edit dan mode main.
+ *
+ * Fitur gambar HUD: pengguna bisa memilih screenshot HUD game dari galeri
+ * sebagai acuan visual, supaya tombol bisa ditempatkan TEPAT di atas
+ * tombol virtual asli game tersebut. Gambar ini disalin ke penyimpanan
+ * internal aplikasi (bukan cuma referensi URI) agar tetap bisa dibuka
+ * kapan saja tanpa perlu izin penyimpanan tambahan.
  */
 class MappingEditorActivity : AppCompatActivity() {
 
@@ -30,11 +46,15 @@ class MappingEditorActivity : AppCompatActivity() {
     }
 
     private lateinit var previewArea: FrameLayout
+    private lateinit var imgHud: ImageView
     private lateinit var repository: ProfileRepository
     private lateinit var profile: MappingProfile
     private var selectedMapping: ButtonMapping? = null
-    private var selectedView: FloatingButtonView? = null
     private val buttonViews = HashMap<String, FloatingButtonView>()
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { handleHudImagePicked(it) }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +67,15 @@ class MappingEditorActivity : AppCompatActivity() {
         profile = repository.load(pkg, label)
 
         previewArea = findViewById(R.id.previewArea)
+        imgHud = findViewById(R.id.imgHud)
         val seekUkuran = findViewById<SeekBar>(R.id.seekUkuran)
         val btnTambah = findViewById<Button>(R.id.btnTambahTombol)
         val btnPreset = findViewById<Button>(R.id.btnPresetWasd)
         val btnSimpan = findViewById<Button>(R.id.btnSimpanMapping)
+        val btnPilihHud = findViewById<Button>(R.id.btnPilihHud)
+        val btnHapusHud = findViewById<Button>(R.id.btnHapusHud)
+
+        loadHudImageIfAny()
 
         // Tunggu previewArea selesai diukur baru gambar tombol (butuh lebar/tinggi asli)
         previewArea.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -59,6 +84,9 @@ class MappingEditorActivity : AppCompatActivity() {
                 redrawAllButtons()
             }
         })
+
+        btnPilihHud.setOnClickListener { pickImageLauncher.launch("image/*") }
+        btnHapusHud.setOnClickListener { clearHudImage() }
 
         btnTambah.setOnClickListener {
             KeyPickerDialog.show(this) { keyName ->
@@ -70,8 +98,7 @@ class MappingEditorActivity : AppCompatActivity() {
 
         btnPreset.setOnClickListener {
             profile.buttons.clear()
-            previewArea.removeAllViews()
-            buttonViews.clear()
+            clearAllButtonViews()
             KeyCatalog.presetWASD().forEach {
                 profile.buttons.add(it)
                 addButtonView(it)
@@ -97,9 +124,47 @@ class MappingEditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun redrawAllButtons() {
-        previewArea.removeAllViews()
+    // ---------- Gambar HUD custom ----------
+
+    private fun hudFileFor(pkg: String): File =
+        File(filesDir, "hud_${pkg.replace(Regex("[^A-Za-z0-9_.]"), "_")}.png")
+
+    private fun handleHudImagePicked(uri: Uri) {
+        try {
+            val outFile = hudFileFor(profile.packageName)
+            contentResolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(outFile).use { output -> input.copyTo(output) }
+            }
+            profile.hudImagePath = outFile.absolutePath
+            imgHud.setImageURI(Uri.fromFile(outFile))
+            Toast.makeText(this, "Gambar HUD dipasang sebagai acuan mapping", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal memuat gambar: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun loadHudImageIfAny() {
+        val path = profile.hudImagePath ?: return
+        val file = File(path)
+        if (file.exists()) imgHud.setImageURI(Uri.fromFile(file))
+    }
+
+    private fun clearHudImage() {
+        profile.hudImagePath?.let { runCatching { File(it).delete() } }
+        profile.hudImagePath = null
+        imgHud.setImageDrawable(null)
+    }
+
+    // ---------- Tombol mapping ----------
+
+    /** Hapus hanya tampilan tombol (bukan ImageView HUD yang menempel permanen di layout). */
+    private fun clearAllButtonViews() {
+        buttonViews.values.forEach { previewArea.removeView(it) }
         buttonViews.clear()
+    }
+
+    private fun redrawAllButtons() {
+        clearAllButtonViews()
         profile.buttons.forEach { addButtonView(it) }
     }
 
@@ -122,6 +187,8 @@ class MappingEditorActivity : AppCompatActivity() {
 
     /** Dipanggil setiap kali FloatingButtonView digeser di mode edit. */
     private fun applyPosition(mapping: ButtonMapping) {
+        mapping.x = mapping.x.coerceIn(0f, 1f)
+        mapping.y = mapping.y.coerceIn(0f, 1f)
         mapping.targetX = mapping.x
         mapping.targetY = mapping.y
         val view = buttonViews[mapping.id] ?: return
@@ -143,7 +210,6 @@ class MappingEditorActivity : AppCompatActivity() {
     /** Dialog opsi saat sebuah tombol di-tap di mode edit: ganti key, atur ukuran, atau hapus. */
     private fun showButtonOptions(mapping: ButtonMapping) {
         selectedMapping = mapping
-        selectedView = buttonViews[mapping.id]
         findViewById<SeekBar>(R.id.seekUkuran).progress =
             (((mapping.size - 0.04f) / 0.16f) * 100f).toInt().coerceIn(0, 100)
 

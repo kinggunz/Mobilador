@@ -23,17 +23,28 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!--
+          WAJIB landscape: previewArea di layar ini merepresentasikan layar
+          game yang juga selalu landscape saat overlay berjalan (lihat
+          OverlayService). Kalau editor dibiarkan portrait, sumbu lebar/tinggi
+          yang dipakai untuk menghitung persentase posisi tombol akan tertukar
+          dan mapping-nya jadi meleset saat dipasang di game (landscape).
+        -->
         <activity
             android:name=".ui.MappingEditorActivity"
             android:exported="false"
-            android:label="@string/editor_title" />
+            android:label="@string/editor_title"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <service
             android:name=".service.MobiAccessibilityService"

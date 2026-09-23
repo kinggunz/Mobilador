@@ -2,26 +2,33 @@ package com.mobibawah.app.overlay
 
 import android.content.Context
 import android.view.MotionEvent
-import android.view.View
 import android.widget.FrameLayout
 import com.mobibawah.app.R
 import com.mobibawah.app.service.MobiAccessibilityService
 
 /**
- * Area transparan yang berfungsi seperti trackpad mouse: geser jari di area
- * ini akan diterjemahkan menjadi rangkaian swipe pendek di titik tengah
- * layar game, sehingga terasa seperti menggerakkan kamera/mouse.
+ * Area transparan ala trackpad mouse: geser jari di sini akan menggerakkan
+ * SATU sentuhan yang benar-benar "ditahan dan digeser" (drag kontinu) di
+ * tengah layar game — persis seperti kamu menggeser peta/kamera langsung
+ * pakai jari, hanya saja arah & jaraknya mengikuti gerakan jari di
+ * touchpad (dikalikan sensitivity), bukan posisi jari yang sebenarnya.
  *
- * sensitivity mengalikan jarak swipe supaya gerakan bisa dibuat lebih halus
- * atau lebih responsif sesuai selera game.
+ * Ini dipakai untuk 2 kebutuhan sekaligus:
+ *  - Simulasi gerakan mouse/kamera (game FPS/TPS gaya PC).
+ *  - Geser-geser layar biasa (scroll peta, dsb) untuk game yang kontrolnya
+ *    memang berbasis drag jari.
  */
 class TouchpadView(context: Context) : FrameLayout(context) {
 
+    companion object {
+        private const val TOUCH_ID = "touchpad"
+    }
+
     var sensitivity: Float = 1.2f
-    private var lastX = 0f
-    private var lastY = 0f
-    private var anchorX = 0f
-    private var anchorY = 0f
+    private var lastRawX = 0f
+    private var lastRawY = 0f
+    private var virtualX = 0f
+    private var virtualY = 0f
 
     init {
         setBackgroundResource(R.drawable.shape_touchpad)
@@ -29,24 +36,30 @@ class TouchpadView(context: Context) : FrameLayout(context) {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val service = MobiAccessibilityService.instance
+        val service = MobiAccessibilityService.instance ?: return true
         val screenW = resources.displayMetrics.widthPixels.toFloat()
         val screenH = resources.displayMetrics.heightPixels.toFloat()
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                lastX = event.rawX; lastY = event.rawY
-                anchorX = screenW / 2f; anchorY = screenH / 2f
+                lastRawX = event.rawX
+                lastRawY = event.rawY
+                // Mulai drag dari titik tengah layar game
+                virtualX = screenW / 2f
+                virtualY = screenH / 2f
+                service.startTouch(TOUCH_ID, virtualX, virtualY)
             }
             MotionEvent.ACTION_MOVE -> {
-                val dx = (event.rawX - lastX) * sensitivity
-                val dy = (event.rawY - lastY) * sensitivity
-                lastX = event.rawX; lastY = event.rawY
-                val fromX = anchorX
-                val fromY = anchorY
-                val toX = (anchorX + dx).coerceIn(0f, screenW)
-                val toY = (anchorY + dy).coerceIn(0f, screenH)
-                service?.performSwipe(fromX, fromY, toX, toY, 25L)
+                val dx = (event.rawX - lastRawX) * sensitivity
+                val dy = (event.rawY - lastRawY) * sensitivity
+                lastRawX = event.rawX
+                lastRawY = event.rawY
+                virtualX = (virtualX + dx).coerceIn(0f, screenW)
+                virtualY = (virtualY + dy).coerceIn(0f, screenH)
+                service.moveTouch(TOUCH_ID, virtualX, virtualY)
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                service.endTouch(TOUCH_ID)
             }
         }
         return true
