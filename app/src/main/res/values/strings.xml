@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Mobibawah</string>
+    <string name="editor_title">Atur Mapping Tombol</string>
+    <string name="accessibility_desc">Mobibawah membutuhkan layanan Aksesibilitas untuk mensimulasikan tap/swipe dari tombol keyboard mengambang ke dalam game.</string>
+    <string name="btn_pilih_aplikasi">Pilih Aplikasi / Game</string>
+    <string name="btn_atur_mapping">Atur Mapping Tombol</string>
+    <string name="btn_mulai">MULAI</string>
+    <string name="btn_izin_overlay">Izinkan Overlay</string>
+    <string name="btn_izin_aksesibilitas">Aktifkan Aksesibilitas</string>
+    <string name="tambah_tombol">+ Tambah Tombol</string>
+    <string name="simpan">Simpan</string>
+    <string name="hapus">Hapus</string>
+</resources>

@@ -1,0 +1,11 @@
+<resources>
+    <color name="primary">#1E88E5</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="accent">#FF5722</color>
+    <color name="bg">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="text_light">#FFFFFF</color>
+    <color name="btn_overlay_fill">#66FFFFFF</color>
+    <color name="btn_overlay_border">#CC1E88E5</color>
+    <color name="btn_edit_fill">#66FF5722</color>
+</resources>

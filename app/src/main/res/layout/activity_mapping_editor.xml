@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Geser tombol untuk atur posisi. Tekan tombol untuk ganti key / ukuran / hapus."
+        android:textColor="#AAAAAA"
+        android:textSize="12sp" />
+
+    <!-- Area pratinjau layar game, tempat semua tombol overlay ditampilkan -->
+    <FrameLayout
+        android:id="@+id/previewArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#000000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btnTambahTombol"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tambah_tombol" />
+
+        <Button
+            android:id="@+id/btnPresetWasd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Preset WASD" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="6dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ukuran tombol terpilih:"
+            android:textColor="@color/text_light"
+            android:textSize="12sp" />
+
+        <SeekBar
+            android:id="@+id/seekUkuran"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="100" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSimpanMapping"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/text_light"
+        android:text="@string/simpan" />
+
+</LinearLayout>
