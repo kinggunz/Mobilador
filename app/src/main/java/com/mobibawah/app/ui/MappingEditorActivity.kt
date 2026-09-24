@@ -7,18 +7,24 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.mobibawah.app.R
 import com.mobibawah.app.data.MappingCodeUtil
 import com.mobibawah.app.data.ProfileRepository
+import com.mobibawah.app.model.ActionType
 import com.mobibawah.app.model.ButtonMapping
 import com.mobibawah.app.model.KeyCatalog
 import com.mobibawah.app.model.MappingProfile
@@ -34,14 +40,14 @@ import java.io.FileOutputStream
  * WAJIB landscape (dikunci lewat AndroidManifest): previewArea di sini
  * merepresentasikan layar game yang juga selalu landscape saat overlay
  * sungguhan berjalan, supaya posisi & ukuran yang kamu atur di sini persis
- * sama saat dipasang di atas game — tidak ada tombol yang meleset/bug
- * gara-gara orientasi berbeda antara mode edit dan mode main.
+ * sama saat dipasang di atas game.
  *
- * Fitur gambar HUD: pengguna bisa memilih screenshot HUD game dari galeri
- * sebagai acuan visual, supaya tombol bisa ditempatkan TEPAT di atas
- * tombol virtual asli game tersebut. Gambar ini disalin ke penyimpanan
- * internal aplikasi (bukan cuma referensi URI) agar tetap bisa dibuka
- * kapan saja tanpa perlu izin penyimpanan tambahan.
+ * Touchpad (area mouse-geser) otomatis muncul begitu layar ini dibuka
+ * (tidak perlu ditambah manual) karena setiap game pada dasarnya bisa
+ * memakai fitur geser-layar. Tap panel "V" di pojok kanan bawah untuk
+ * sembunyikan/tampilkan bilah tombol pengaturan, supaya seluruh layar
+ * bebas dipakai menaruh tombol di posisi mana pun (termasuk yang tadinya
+ * ketutup bilah bawah).
  */
 class MappingEditorActivity : AppCompatActivity() {
 
@@ -56,6 +62,7 @@ class MappingEditorActivity : AppCompatActivity() {
     private lateinit var profile: MappingProfile
     private var selectedMapping: ButtonMapping? = null
     private val buttonViews = HashMap<String, FloatingButtonView>()
+    private var touchpadView: TouchpadEditView? = null
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { handleHudImagePicked(it) }
@@ -81,16 +88,28 @@ class MappingEditorActivity : AppCompatActivity() {
         val btnHapusHud = findViewById<Button>(R.id.btnHapusHud)
         val btnBagikanKode = findViewById<Button>(R.id.btnBagikanKode)
         val btnImporKode = findViewById<Button>(R.id.btnImporKode)
+        val panelBawah = findViewById<LinearLayout>(R.id.panelBawah)
+        val btnToggleMenu = findViewById<TextView>(R.id.btnToggleMenu)
+        val btnTutorial = findViewById<TextView>(R.id.btnTutorial)
 
         loadHudImageIfAny()
 
-        // Tunggu previewArea selesai diukur baru gambar tombol (butuh lebar/tinggi asli)
+        // Tunggu previewArea selesai diukur baru gambar tombol & touchpad (butuh lebar/tinggi asli)
         previewArea.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 previewArea.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 redrawAllButtons()
+                addTouchpadView() // touchpad selalu ada otomatis, tidak perlu ditambah manual
             }
         })
+
+        btnToggleMenu.setOnClickListener {
+            val show = panelBawah.visibility != View.VISIBLE
+            panelBawah.visibility = if (show) View.VISIBLE else View.GONE
+            btnToggleMenu.text = if (show) "▼" else "▲"
+        }
+
+        btnTutorial.setOnClickListener { showTutorialDialog() }
 
         btnPilihHud.setOnClickListener { pickImageLauncher.launch("image/*") }
         btnHapusHud.setOnClickListener { clearHudImage() }
@@ -133,6 +152,139 @@ class MappingEditorActivity : AppCompatActivity() {
         }
     }
 
+    // ---------- Tutorial ----------
+
+    private fun showTutorialDialog() {
+        val pesan = """
+            • + TAMBAH TOMBOL: pilih key (W/A/S/D/dst), lalu geser tombolnya ke posisi yang pas persis di atas tombol asli game.
+            • PRESET WASD: langsung buat 4 tombol arah + Space + Shift, tinggal digeser ulang posisinya.
+            • Tap tombol yang sudah ada = ganti nama key, ganti tipe aksi (Tap/Hold/Toggle/Macro), atau hapus.
+              - TAP: sekali sentuh sekali aksi.
+              - HOLD: ditahan selama jari menekan (cocok gerak jalan W/A/S/D).
+              - TOGGLE: sekali tekan = nyala terus sampai ditekan lagi.
+              - MACRO: sekali tekan = tap super cepat berulang otomatis (auto-tap) sampai ditekan lagi.
+            • Kotak biru "➤ MOUSE / GESER LAYAR" itu TOUCHPAD, sudah otomatis ada. Geser untuk pindah posisi, tap untuk atur ukuran & sensitivitas.
+            • PILIH GAMBAR HUD: opsional, ambil screenshot HUD game dari galeri sebagai acuan biar taruh tombolnya presisi.
+            • BAGIKAN KODE / IMPOR KODE: kirim/terima layout tombol ke & dari teman lewat kode teks pendek.
+            • Tombol ▼/▲ di pojok kanan bawah: sembunyikan/tampilkan bilah menu ini, biar seluruh layar bebas dipakai naruh tombol.
+            • Jangan lupa tekan SIMPAN setelah selesai mengatur.
+        """.trimIndent()
+
+        AlertDialog.Builder(this)
+            .setTitle("Cara Pakai Mapping")
+            .setMessage(pesan)
+            .setPositiveButton("Mengerti", null)
+            .show()
+    }
+
+    // ---------- Touchpad (otomatis ada, bisa digeser & diatur) ----------
+
+    private fun addTouchpadView() {
+        touchpadView?.let { previewArea.removeView(it) }
+        val previewW = previewArea.width.takeIf { it > 0 } ?: resources.displayMetrics.widthPixels
+        val previewH = previewArea.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
+
+        val view = TouchpadEditView(
+            this,
+            onMoved = { dxFrac, dyFrac ->
+                profile.touchpadX = (profile.touchpadX + dxFrac).coerceIn(0f, 1f - profile.touchpadWidth)
+                profile.touchpadY = (profile.touchpadY + dyFrac).coerceIn(0f, 1f - profile.touchpadHeight)
+                applyTouchpadPosition()
+            },
+            onTapped = { showTouchpadOptions() }
+        )
+        val params = FrameLayout.LayoutParams(
+            (profile.touchpadWidth * previewW).toInt(),
+            (profile.touchpadHeight * previewH).toInt(),
+            Gravity.TOP or Gravity.START
+        )
+        params.leftMargin = (profile.touchpadX * previewW).toInt()
+        params.topMargin = (profile.touchpadY * previewH).toInt()
+        view.alpha = if (profile.touchpadEnabled) 1f else 0.35f
+        previewArea.addView(view, 0, params) // index 0: di bawah tombol-tombol lain
+        touchpadView = view
+    }
+
+    private fun applyTouchpadPosition() {
+        val view = touchpadView ?: return
+        val params = view.layoutParams as FrameLayout.LayoutParams
+        params.leftMargin = (profile.touchpadX * previewArea.width).toInt()
+        params.topMargin = (profile.touchpadY * previewArea.height).toInt()
+        view.layoutParams = params
+    }
+
+    private fun applyTouchpadSize() {
+        val view = touchpadView ?: return
+        val params = view.layoutParams as FrameLayout.LayoutParams
+        params.width = (profile.touchpadWidth * previewArea.width).toInt()
+        params.height = (profile.touchpadHeight * previewArea.height).toInt()
+        view.layoutParams = params
+    }
+
+    private fun showTouchpadOptions() {
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(40, 24, 40, 0)
+        }
+
+        val switchAktif = Switch(this).apply {
+            text = "Aktifkan touchpad saat main"
+            isChecked = profile.touchpadEnabled
+        }
+        container.addView(switchAktif)
+
+        container.addView(TextView(this).apply { text = "\nLebar" })
+        val seekLebar = SeekBar(this).apply {
+            max = 100
+            progress = (((profile.touchpadWidth - 0.15f) / 0.5f) * 100f).toInt().coerceIn(0, 100)
+        }
+        container.addView(seekLebar)
+
+        container.addView(TextView(this).apply { text = "Tinggi" })
+        val seekTinggi = SeekBar(this).apply {
+            max = 100
+            progress = (((profile.touchpadHeight - 0.15f) / 0.5f) * 100f).toInt().coerceIn(0, 100)
+        }
+        container.addView(seekTinggi)
+
+        container.addView(TextView(this).apply { text = "Sensitivitas Gerak" })
+        val seekSensitif = SeekBar(this).apply {
+            max = 100
+            progress = (((profile.mouseSensitivity - 0.3f) / 2.7f) * 100f).toInt().coerceIn(0, 100)
+        }
+        container.addView(seekSensitif)
+
+        seekLebar.setOnSeekBarChangeListener(simpleSeekListener { p ->
+            profile.touchpadWidth = 0.15f + (p / 100f) * 0.5f
+            applyTouchpadSize()
+        })
+        seekTinggi.setOnSeekBarChangeListener(simpleSeekListener { p ->
+            profile.touchpadHeight = 0.15f + (p / 100f) * 0.5f
+            applyTouchpadSize()
+        })
+        seekSensitif.setOnSeekBarChangeListener(simpleSeekListener { p ->
+            profile.mouseSensitivity = 0.3f + (p / 100f) * 2.7f
+        })
+        switchAktif.setOnCheckedChangeListener { _: CompoundButton, checked: Boolean ->
+            profile.touchpadEnabled = checked
+            touchpadView?.alpha = if (checked) 1f else 0.35f
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Atur Touchpad")
+            .setView(container)
+            .setPositiveButton("Selesai", null)
+            .show()
+    }
+
+    private fun simpleSeekListener(onChange: (Int) -> Unit) = object : SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+            if (fromUser) onChange(progress)
+        }
+        override fun onStartTrackingTouch(sb: SeekBar?) {}
+        override fun onStopTrackingTouch(sb: SeekBar?) {}
+    }
+
     // ---------- Kode mapping (bagikan/impor ke orang lain) ----------
 
     /** Buat kode dari mapping saat ini, tampilkan di dialog dengan tombol Salin. */
@@ -156,12 +308,12 @@ class MappingEditorActivity : AppCompatActivity() {
         }
 
         AlertDialog.Builder(this)
-            .setTitle("Kode Mapping Kamu")
+            .setTitle("Kode Mapping Kamu (${code.length} karakter)")
             .setMessage("Kirim kode ini ke temanmu. Mereka tinggal tempel di tombol \"Impor Kode\" di game apa saja untuk memakai layout tombol yang sama persis.")
             .setView(input)
             .setPositiveButton("Salin") { _, _ ->
                 val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                cm.setPrimaryClip(ClipData.newPlainText("Kode Mapping Mobibawah", code))
+                cm.setPrimaryClip(ClipData.newPlainText("Kode Mapping MobiladorWv1", code))
                 Toast.makeText(this, "Kode disalin ke clipboard", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Tutup", null)
@@ -194,6 +346,7 @@ class MappingEditorActivity : AppCompatActivity() {
                 profile.mouseSensitivity = imported.mouseSensitivity
                 clearAllButtonViews()
                 profile.buttons.forEach { addButtonView(it) }
+                addTouchpadView()
                 Toast.makeText(this, "Mapping berhasil dipasang, jangan lupa Simpan", Toast.LENGTH_LONG).show()
             }
             .setNegativeButton("Batal", null)
@@ -233,7 +386,7 @@ class MappingEditorActivity : AppCompatActivity() {
 
     // ---------- Tombol mapping ----------
 
-    /** Hapus hanya tampilan tombol (bukan ImageView HUD yang menempel permanen di layout). */
+    /** Hapus hanya tampilan tombol (bukan ImageView HUD / touchpad yang menempel permanen). */
     private fun clearAllButtonViews() {
         buttonViews.values.forEach { previewArea.removeView(it) }
         buttonViews.clear()
@@ -307,7 +460,7 @@ class MappingEditorActivity : AppCompatActivity() {
     }
 
     private fun pickActionType(mapping: ButtonMapping) {
-        val types = com.mobibawah.app.model.ActionType.values()
+        val types = ActionType.values()
         val names = types.map { it.name }.toTypedArray()
         AlertDialog.Builder(this)
             .setTitle("Tipe Aksi untuk ${mapping.label}")

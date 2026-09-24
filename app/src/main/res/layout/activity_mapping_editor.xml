@@ -37,8 +37,39 @@
         android:textColor="#DDDDDD"
         android:textSize="10sp" />
 
+    <!-- Tombol bantuan "?" -> buka tutorial cara pakai -->
+    <TextView
+        android:id="@+id/btnTutorial"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_overlay_button"
+        android:gravity="center"
+        android:text="?"
+        android:textColor="@color/text_light"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Tombol V (▼/▲) untuk sembunyikan/tampilkan panel bawah, selalu
+         terlihat sendiri di luar panel supaya bisa dipakai kapan saja
+         untuk membebaskan seluruh layar buat menaruh tombol. -->
+    <TextView
+        android:id="@+id/btnToggleMenu"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_overlay_button"
+        android:gravity="center"
+        android:text="▼"
+        android:textColor="@color/text_light"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
     <!-- Panel kontrol melayang di bagian bawah layar, transparan, di atas gambar -->
     <LinearLayout
+        android:id="@+id/panelBawah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

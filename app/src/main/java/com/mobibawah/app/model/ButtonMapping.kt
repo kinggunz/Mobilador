@@ -36,7 +36,7 @@ data class ButtonMapping(
     var actionType: ActionType = ActionType.HOLD,
     // Jeda antar tap (milidetik) khusus untuk actionType = MACRO. Semakin
     // kecil, semakin cepat tap-nya (mis. 50ms = 20 tap per detik).
-    var macroIntervalMs: Long = 80L
+    var macroIntervalMs: Long = 50L
 )
 
 /**

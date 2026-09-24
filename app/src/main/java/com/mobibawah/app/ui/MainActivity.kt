@@ -20,12 +20,12 @@ import com.mobibawah.app.data.ProfileRepository
 import com.mobibawah.app.overlay.OverlayService
 
 /**
- * Menu utama (hub) Mobibawah:
+ * Menu utama (hub) MobiladorWv1:
  *  - Logo animasi (pulse) di header.
  *  - Tombol "+" besar di tengah -> buka AppPickerActivity untuk memilih game.
  *  - Baris "Game Tersimpan": game yang sudah pernah dipetakan, tap untuk
  *    langsung ke AppDetailActivity game itu.
- *  - Tombol "Matikan Mobibawah" untuk menghentikan overlay yang sedang berjalan.
+ *  - Tombol "Matikan MobiladorWv1" untuk menghentikan overlay yang sedang berjalan.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -41,13 +41,16 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnOverlayPermission).setOnClickListener { requestOverlayPermission() }
         findViewById<Button>(R.id.btnAccessibility).setOnClickListener { openAccessibilitySettings() }
+        findViewById<Button>(R.id.btnPesan).setOnClickListener {
+            startActivity(Intent(this, PesanActivity::class.java))
+        }
 
         findViewById<Button>(R.id.btnMatikanMobi).setOnClickListener {
             if (OverlayService.isRunning) {
                 stopService(Intent(this, OverlayService::class.java))
-                Toast.makeText(this, "Mobibawah dimatikan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "MobiladorWv1 dimatikan", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Mobibawah belum berjalan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "MobiladorWv1 belum berjalan", Toast.LENGTH_SHORT).show()
             }
         }
     }

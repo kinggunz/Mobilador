@@ -41,7 +41,37 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
-## Update terbaru (perbaikan besar)
+## Update terbaru (v1 — MobiladorWv1)
+
+- **Nama aplikasi diganti** jadi **MobiladorWv1** di semua teks yang
+  terlihat pengguna (nama app, notifikasi, pesan, SK). ID paket internal
+  (`com.mobibawah.app`) sengaja **tidak diubah** — mengganti applicationId
+  berisiko merusak proses build/signing dan tidak berpengaruh pada apa
+  yang dilihat pengguna, jadi ini cukup aman & tidak perlu.
+- **Kode Mapping jauh lebih pendek**: format kode dirombak total (array
+  bukan object, angka dibulatkan 3 desimal, tipe aksi jadi angka, Base64
+  tanpa padding) — kode yang tadinya bisa >300 karakter sekarang jauh
+  lebih ringkas, dan dialognya sekarang menampilkan jumlah karakternya.
+  Tombol **Salin** tetap ada untuk sekali tempel ke clipboard.
+- **Touchpad otomatis muncul di editor**: begitu buka "Atur Mapping
+  Tombol", kotak biru **"➤ MOUSE / GESER LAYAR"** sudah langsung ada
+  (tidak perlu ditambah manual). Geser untuk pindah posisi, tap untuk buka
+  pengaturan lebar/tinggi/sensitivitas & aktif/nonaktif.
+- **Tombol ▼/▲ (toggle panel)**: pojok kanan-bawah layar mapping, untuk
+  menyembunyikan/menampilkan seluruh bilah menu bawah — supaya area yang
+  tadinya ketutup bilah menu (seperti tombol SHIFT di gambar referensimu)
+  bisa dipakai bebas menaruh tombol di mana saja.
+- **Tombol "?" tutorial**: pojok kanan-atas layar mapping, isinya
+  penjelasan singkat semua fitur (tambah tombol, tipe aksi, touchpad,
+  gambar HUD, kode mapping, dst).
+- **Halaman "Pesan"**: menu baru di halaman utama (tombol **Pesan**),
+  berisi cerita/pesan panjang tentang proyek ini. *Teksnya saya isi dengan
+  draf umum di `strings.xml` (`pesan_body`) — silakan edit langsung jadi
+  cerita pribadimu sendiri kapan saja, tanpa perlu ubah kode lain.*
+- **Macro dipercepat**: interval default auto-tap dipercepat jadi 50ms
+  (~20 tap/detik) supaya terasa lebih "cepat" sesuai fungsinya.
+
+## Update sebelumnya
 
 - **PERBAIKAN UTAMA — Keyboard fisik (Bluetooth & kabel/OTG) kini beneran
   berfungsi.** Sebelumnya Mobibawah hanya membaca sentuhan di layar, tidak

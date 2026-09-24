@@ -31,12 +31,20 @@
             android:textStyle="bold" />
 
         <Button
+            android:id="@+id/btnPesan"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:text="Pesan" />
+
+        <Button
             android:id="@+id/btnMatikanMobi"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="11sp"
-            android:text="Matikan Mobibawah" />
+            android:text="Matikan MobiladorWv1" />
     </LinearLayout>
 
     <!-- Area tengah: tombol + besar untuk menambahkan/memilih game -->

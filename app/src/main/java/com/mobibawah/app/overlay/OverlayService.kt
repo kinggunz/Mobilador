@@ -24,7 +24,7 @@ import com.mobibawah.app.service.MobiAccessibilityService
  *
  * Juga menyediakan SATU tombol bulat "mengambang" kecil (drag-handle) yang
  * selalu ada di layar untuk: sembunyikan/tampilkan semua tombol, atau
- * kembali ke Mobibawah untuk mengubah mapping.
+ * kembali ke MobiladorWv1 untuk mengubah mapping.
  */
 class OverlayService : Service() {
 
@@ -34,9 +34,18 @@ class OverlayService : Service() {
         const val CHANNEL_ID = "mobibawah_overlay"
         const val NOTIF_ID = 1001
         // Dipakai MainActivity untuk tahu apakah overlay sedang berjalan,
-        // supaya tombol "Matikan Mobibawah" tahu harus aktif atau tidak.
+        // supaya tombol "Matikan MobiladorWv1" tahu harus aktif atau tidak.
         var isRunning: Boolean = false
             private set
+
+        // Daftar tombol mapping yang SEDANG AKTIF (game yang sedang dimainkan).
+        // Dibuat "static" dan dibaca LANGSUNG oleh MobiAccessibilityService
+        // setiap ada tombol fisik ditekan — bukan cuma di-"push" sekali di
+        // awal — supaya tidak ada race condition kalau Accessibility Service
+        // belum sempat konek persis saat overlay baru dinyalakan. Ini
+        // perbaikan supaya tombol keyboard fisik (mis. "A") selalu
+        // ke-mapping dengan benar.
+        var activeMappingButtons: List<com.mobibawah.app.model.ButtonMapping> = emptyList()
     }
 
     private lateinit var windowManager: WindowManager
@@ -62,11 +71,11 @@ class OverlayService : Service() {
         // 2) Muat mapping tersimpan untuk game ini
         val profile = ProfileRepository(this).load(pkg ?: "unknown", label)
 
-        // 2b) Daftarkan mapping ini ke Accessibility Service supaya KEYBOARD
-        // FISIK (Bluetooth/kabel) juga bisa memicu aksi yang sama seperti
-        // tombol di layar — ini bagian yang tadinya hilang & bikin keyboard
-        // fisik tidak berfungsi sama sekali.
-        MobiAccessibilityService.instance?.setActiveMapping(profile.buttons)
+        // 2b) Daftarkan mapping ini secara statis supaya KEYBOARD FISIK
+        // (Bluetooth/kabel) juga bisa memicu aksi yang sama seperti tombol
+        // di layar. Dibaca langsung oleh MobiAccessibilityService (bukan
+        // di-push), jadi tetap benar walau service baru konek belakangan.
+        activeMappingButtons = profile.buttons
 
         // 3) Gambar semua tombol + touchpad + tombol mengambang kontrol
         drawButtons(profile)
@@ -204,13 +213,13 @@ class OverlayService : Service() {
     private fun buildNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                CHANNEL_ID, "Mobibawah Overlay", NotificationManager.IMPORTANCE_LOW
+                CHANNEL_ID, "MobiladorWv1 Overlay", NotificationManager.IMPORTANCE_LOW
             )
             val nm = getSystemService(NotificationManager::class.java)
             nm.createNotificationChannel(channel)
         }
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Mobibawah aktif")
+            .setContentTitle("MobiladorWv1 aktif")
             .setContentText("Tombol mapping sedang berjalan. Ketuk ikon ⌨ untuk sembunyikan.")
             .setSmallIcon(android.R.drawable.ic_menu_manage)
             .setOngoing(true)
@@ -220,6 +229,7 @@ class OverlayService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
+        activeMappingButtons = emptyList()
         MobiAccessibilityService.instance?.clearActiveMapping()
         overlayViews.forEach { runCatching { windowManager.removeView(it) } }
         overlayViews.clear()

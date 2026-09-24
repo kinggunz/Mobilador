@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Mobibawah</string>
+    <string name="app_name">MobiladorWv1</string>
     <string name="editor_title">Atur Mapping Tombol</string>
-    <string name="accessibility_desc">Mobibawah membutuhkan layanan Aksesibilitas untuk (1) mensimulasikan tap/swipe dari tombol keyboard mengambang ke dalam game, dan (2) membaca tombol keyboard fisik (Bluetooth/kabel) supaya mapping tetap berfungsi walau kamu memakai keyboard sungguhan.</string>
+    <string name="accessibility_desc">MobiladorWv1 membutuhkan layanan Aksesibilitas untuk (1) mensimulasikan tap/swipe dari tombol keyboard mengambang ke dalam game, dan (2) membaca tombol keyboard fisik (Bluetooth/kabel) supaya mapping tetap berfungsi walau kamu memakai keyboard sungguhan.</string>
     <string name="btn_pilih_aplikasi">Pilih Aplikasi / Game</string>
     <string name="btn_atur_mapping">Atur Mapping Tombol</string>
     <string name="btn_mulai">MULAI</string>
@@ -12,7 +12,7 @@
     <string name="hapus">Hapus</string>
     <string name="terms_body"><![CDATA[
 1. TENTANG APLIKASI
-Mobibawah adalah alat bantu pemetaan tombol sentuh (keymapper) yang dibuat untuk kebutuhan pribadi, memudahkan kontrol aplikasi/game Android memakai tombol keyboard virtual dan touchpad mouse buatan sendiri.
+MobiladorWv1 adalah alat bantu pemetaan tombol sentuh (keymapper) yang dibuat untuk kebutuhan pribadi, memudahkan kontrol aplikasi/game Android memakai tombol keyboard virtual dan touchpad mouse buatan sendiri.
 
 2. TANGGUNG JAWAB PENGGUNA
 Pengguna bertanggung jawab penuh atas pemakaian aplikasi ini, termasuk memastikan pemakaiannya tidak melanggar Syarat & Ketentuan aplikasi/game pihak ketiga yang dipetakan. Sebagian game daring bisa saja melarang penggunaan alat bantu kontrol pihak ketiga — periksa dulu kebijakan game yang bersangkutan.
@@ -29,4 +29,17 @@ Ketentuan ini bisa diperbarui sewaktu-waktu mengikuti perkembangan aplikasi.
 Dengan mencentang kotak persetujuan dan menekan tombol "SETUJU & LANJUTKAN", kamu menyatakan telah membaca dan memahami ketentuan di atas.
 ]]></string>
     <string name="credit_text">Credit by Gunz</string>
+    <string name="pesan_body"><![CDATA[
+Halo, terima kasih sudah memakai MobiladorWv1.
+
+Aplikasi ini awalnya dibuat dari kebutuhan sederhana: banyak game Android yang sebenarnya lebih nyaman dimainkan pakai keyboard dan mouse, tapi tidak semua game mendukungnya secara resmi. Dari situ muncul ide membuat alat bantu pemetaan tombol sendiri — supaya siapa pun bisa memetakan tombol keyboard (fisik maupun virtual di layar) dan gerakan mouse ke game favoritnya, dengan posisi dan ukuran yang bisa diatur sendiri sampai benar-benar pas.
+
+Proyek ini dikerjakan sedikit demi sedikit, dari fitur paling dasar (tombol tap sederhana) sampai berkembang jadi seperti sekarang: dukungan keyboard fisik Bluetooth maupun kabel, touchpad untuk simulasi gerakan mouse, gambar HUD kustom sebagai acuan penempatan tombol, fitur macro untuk tap cepat otomatis, sampai fitur berbagi kode mapping supaya teman-teman bisa langsung memakai pengaturan yang sama tanpa perlu mengatur dari nol.
+
+Aplikasi ini murni proyek pribadi yang dikembangkan dengan penuh semangat coba-coba, perbaikan, dan masukan dari teman-teman yang ikut mencoba. Kalau kamu menemukan bug atau ada fitur yang menurutmu bisa ditambahkan, jangan ragu untuk memberi tahu — setiap masukan sangat berarti untuk membuat aplikasi ini lebih baik lagi ke depannya.
+
+Semoga MobiladorWv1 bisa membantu pengalaman bermain game kamu jadi lebih nyaman. Selamat bermain!
+
+— Gunz
+]]></string>
 </resources>

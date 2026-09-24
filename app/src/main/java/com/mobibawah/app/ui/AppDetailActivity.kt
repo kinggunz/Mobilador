@@ -70,7 +70,7 @@ class AppDetailActivity : AppCompatActivity() {
             return
         }
         if (!isAccessibilityServiceEnabled()) {
-            Toast.makeText(this, "Aktifkan Layanan Aksesibilitas Mobibawah dulu", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Aktifkan Layanan Aksesibilitas MobiladorWv1 dulu", Toast.LENGTH_LONG).show()
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             return
         }
@@ -80,7 +80,7 @@ class AppDetailActivity : AppCompatActivity() {
         serviceIntent.putExtra(OverlayService.EXTRA_LABEL, label)
         startForegroundService(serviceIntent)
 
-        // Minimalkan Mobibawah supaya game tampil di depan
+        // Minimalkan MobiladorWv1 supaya game tampil di depan
         moveTaskToBack(true)
     }
 

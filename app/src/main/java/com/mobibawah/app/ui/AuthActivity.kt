@@ -12,7 +12,7 @@ import com.mobibawah.app.data.AppPrefs
 
 /**
  * Gerbang pertama aplikasi: buat akun lokal (username + password) sebelum
- * bisa memakai Mobibawah. Akun ini tersimpan di perangkat saja (lihat
+ * bisa memakai MobiladorWv1. Akun ini tersimpan di perangkat saja (lihat
  * AppPrefs) — bukan akun online. Setelah berhasil daftar, lanjut ke
  * TermsActivity (SK), lalu ke MainActivity dan tidak akan diminta lagi.
  */
