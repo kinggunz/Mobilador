@@ -28,6 +28,12 @@ class ProfileRepository(context: Context) {
 
     fun hasProfile(packageName: String): Boolean = prefs.contains(packageName)
 
+    /** Semua profil mapping yang pernah disimpan, dipakai untuk daftar "favorit" di menu utama. */
+    fun getAllProfiles(): List<MappingProfile> =
+        prefs.all.values.mapNotNull { raw ->
+            runCatching { fromJson(JSONObject(raw as String)) }.getOrNull()
+        }
+
     fun delete(packageName: String) {
         prefs.edit().remove(packageName).apply()
     }
@@ -55,6 +61,7 @@ class ProfileRepository(context: Context) {
             bo.put("targetX", b.targetX)
             bo.put("targetY", b.targetY)
             bo.put("actionType", b.actionType.name)
+            bo.put("macroIntervalMs", b.macroIntervalMs)
             arr.put(bo)
         }
         obj.put("buttons", arr)
@@ -76,7 +83,8 @@ class ProfileRepository(context: Context) {
                     size = bo.getDouble("size").toFloat(),
                     targetX = bo.getDouble("targetX").toFloat(),
                     targetY = bo.getDouble("targetY").toFloat(),
-                    actionType = ActionType.valueOf(bo.getString("actionType"))
+                    actionType = ActionType.valueOf(bo.getString("actionType")),
+                    macroIntervalMs = bo.optLong("macroIntervalMs", 80L)
                 )
             )
         }

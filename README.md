@@ -41,43 +41,90 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
+## Fitur terbaru (update besar)
+
+- **Wajib daftar akun dulu** (username & password) sebelum bisa pakai —
+  akun ini **lokal di perangkat saja** (bukan online), tersimpan terenkripsi
+  hash di `AppPrefs`. Sekali daftar, tidak diminta lagi selanjutnya.
+- **Halaman SK (Syarat & Ketentuan)** wajib dicentang & disetujui sebelum
+  masuk ke menu utama, ada teks **"Credit by Gunz"**.
+- **Menu utama baru (hub)**: logo animasi (efek "bernapas"), tombol **+**
+  besar di tengah untuk memilih game, daftar **Game Tersimpan** (game yang
+  sudah pernah dipetakan, tap untuk buka lagi), dan tombol **Matikan
+  Mobibawah** untuk menghentikan overlay yang sedang berjalan.
+- **Halaman Detail Aplikasi**: setelah pilih game dari daftar, tampil logo
+  aplikasi besar dengan latar dari icon aplikasi itu sendiri, status
+  mapping (sudah/belum diatur), tombol **Atur Mapping Tombol** dan **MULAI**.
+- **Gambar HUD custom full screen**: di layar mapping, gambar HUD yang
+  dipilih dari galeri sekarang mengisi **seluruh layar** (tanpa bilah hitam
+  kosong) sebagai acuan visual. Posisi tombol tetap dihitung sebagai
+  persentase lebar/tinggi layar (bukan piksel gambar), jadi presisinya
+  tetap sama persis saat overlay sungguhan berjalan di game — baik gambar
+  HUD-nya pas layar penuh atau rasionya berbeda sedikit.
+- **Panel kontrol melayang**: semua tombol pengaturan (Tambah Tombol,
+  Preset WASD, Pilih/Hapus Gambar HUD, ukuran, Simpan) sekarang jadi bilah
+  melayang transparan di bagian bawah, tidak memotong area pratinjau.
+- **Icon logo & animasi sendiri**: adaptive icon custom (gaya WASD +
+  kursor mouse) dan animasi pulse pada logo di menu utama.
+- **Fitur Makro (auto-tap cepat)**: tipe aksi baru `MACRO` — sekali tekan
+  untuk menyalakan, tombol akan mengirim tap super cepat berulang terus-
+  menerus (interval bisa diatur, default 80ms) sampai ditekan sekali lagi
+  untuk mematikan. Tombol macro tetap bisa digeser bebas di mode edit, dan
+  saat aktif **tidak mengganggu** touchpad/tombol lain karena setiap
+  elemen overlay adalah window terpisah.
+- **Touchpad mouse drag kontinu** (dari update sebelumnya) tetap ada dan
+  tidak terganggu oleh tombol macro yang aktif bersamaan.
+
 ## Arsitektur
 
 ```
 app/src/main/java/com/mobibawah/app/
 ├── model/
-│   ├── ButtonMapping.kt      -> data class posisi/ukuran/tipe aksi 1 tombol
-│   ├── MappingProfile.kt     -> (di dalam ButtonMapping.kt) kumpulan tombol per aplikasi
+│   ├── ButtonMapping.kt      -> posisi/ukuran/tipe aksi (TAP/HOLD/TOGGLE/MACRO) 1 tombol
 │   ├── KeyCatalog.kt         -> daftar semua tombol (A-Z, 0-9, arah, fungsi) + preset WASD
 │   └── AppInfo.kt            -> data class untuk daftar aplikasi terpasang
 ├── data/
-│   └── ProfileRepository.kt  -> simpan/baca mapping per packageName (SharedPreferences + JSON)
+│   ├── AppPrefs.kt           -> akun lokal (register/login) & status persetujuan SK
+│   └── ProfileRepository.kt  -> simpan/baca mapping + gambar HUD per packageName
 ├── service/
-│   └── MobiAccessibilityService.kt -> dispatch gesture tap/hold/swipe ke layar
+│   └── MobiAccessibilityService.kt -> dispatch gesture tap/hold/drag/macro ke layar
 ├── overlay/
-│   ├── FloatingButtonView.kt -> View tombol bulat, mode "main" & mode "edit"
-│   ├── TouchpadView.kt       -> View trackpad untuk simulasi mouse/kamera
-│   └── OverlayService.kt     -> foreground service yang menggambar semua tombol
-│                                  di atas game (WindowManager overlay)
+│   ├── FloatingButtonView.kt -> View tombol bulat: mode "main" (tap/hold/toggle/macro) & "edit"
+│   ├── TouchpadView.kt       -> View trackpad drag kontinu untuk simulasi mouse/kamera
+│   └── OverlayService.kt     -> foreground service yang menggambar semua tombol di atas game
 └── ui/
-    ├── MainActivity.kt          -> pilih aplikasi, cek izin, tombol MULAI
-    ├── AppListAdapter.kt        -> daftar aplikasi terpasang di device
-    ├── MappingEditorActivity.kt -> layar "Atur Mapping Tombol" (drag, resize, key picker)
-    └── KeyPickerDialog.kt       -> dialog pilih tombol keyboard
+    ├── LauncherActivity.kt       -> gerbang routing awal (Daftar -> SK -> Menu Utama)
+    ├── AuthActivity.kt           -> halaman daftar akun / login lokal
+    ├── TermsActivity.kt          -> halaman SK dengan checkbox wajib
+    ├── MainActivity.kt           -> menu utama (hub): logo animasi, tombol +, favorit, matikan
+    ├── AppPickerActivity.kt      -> halaman daftar aplikasi terpasang untuk dipilih
+    ├── AppDetailActivity.kt      -> halaman detail 1 game: icon besar, MULAI, Atur Mapping
+    ├── AppListAdapter.kt         -> adapter RecyclerView daftar aplikasi
+    ├── MappingEditorActivity.kt  -> layar "Atur Mapping Tombol" full screen + gambar HUD
+    └── KeyPickerDialog.kt        -> dialog pilih tombol keyboard
 ```
 
 ## Alur pemakaian
 
-1. Buka Mobibawah → izinkan **Tampil di atas aplikasi lain** (Overlay) dan
-   aktifkan **Layanan Aksesibilitas Mobibawah**.
-2. Pilih game/aplikasi dari daftar.
-3. Tap **Atur Mapping Tombol** → atur posisi & ukuran tombol (drag langsung
-   di pratinjau), pilih key (W/A/S/D/dst), pilih tipe aksi (Tap/Hold/Toggle),
-   atau pakai **Preset WASD** sebagai titik awal → **Simpan**.
-4. Tap **MULAI** → Mobibawah otomatis membuka game tersebut, lalu menampilkan
-   semua tombol + touchpad mengambang di atasnya.
-5. Ada **tombol bulat ⌨ mengambang** yang selalu ada & bisa digeser bebas —
+1. **Buka pertama kali** → wajib **Daftar Akun** (username & password, lokal
+   di HP) → wajib centang & setujui **Syarat & Ketentuan** → masuk ke
+   **Menu Utama**. Selanjutnya buka app langsung ke Menu Utama.
+2. Di Menu Utama, izinkan **Tampil di atas aplikasi lain** (Overlay) dan
+   aktifkan **Layanan Aksesibilitas Mobibawah** (tombol kecil di bawah).
+3. Tap tombol **+** besar di tengah → pilih game dari daftar aplikasi
+   terpasang → masuk ke halaman detail game tersebut (logo besar + latar
+   icon game).
+4. Tap **Atur Mapping Tombol** → (opsional) **Pilih Gambar HUD** dari
+   galeri sebagai acuan visual (mengisi layar penuh) → atur posisi &
+   ukuran tombol (drag langsung), pilih key, pilih tipe aksi
+   (Tap/Hold/Toggle/**Macro**), atau pakai **Preset WASD** → **Simpan**.
+5. Kembali ke halaman detail game → tap **MULAI** → Mobibawah otomatis
+   membuka game tersebut, lalu menampilkan semua tombol + touchpad
+   mengambang di atasnya.
+6. Ada **tombol bulat ⌨ mengambang** yang selalu ada & bisa digeser bebas —
    tap sekali untuk sembunyikan/tampilkan semua tombol kapan saja.
+7. Untuk berhenti total, kembali ke Mobibawah (Menu Utama) → tap
+   **Matikan Mobibawah**.
 
 ## Build
 

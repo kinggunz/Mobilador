@@ -1,115 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bg">
+    android:background="#000000">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="8dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Geser tombol untuk atur posisi. Tekan tombol untuk ganti key/ukuran/hapus."
-            android:textColor="#AAAAAA"
-            android:textSize="11sp" />
-
-        <Button
-            android:id="@+id/btnPilihHud"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="Pilih Gambar HUD" />
-
-        <Button
-            android:id="@+id/btnHapusHud"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="Hapus" />
-    </LinearLayout>
-
-    <!-- Area pratinjau layar game (SELALU landscape, mengikuti orientasi
-         activity ini), tempat gambar HUD custom + semua tombol overlay
-         ditampilkan bertumpuk. -->
+    <!-- Area pratinjau FULL LAYAR: gambar HUD (kalau ada) mengisi penuh
+         seluruh layar (centerCrop = tidak ada bilah hitam kosong), lalu
+         semua tombol overlay digambar tepat di atasnya. Karena posisi
+         tombol disimpan sebagai PERSENTASE lebar/tinggi layar (bukan
+         piksel gambar), penempatan tetap presisi sama persis dengan saat
+         overlay sungguhan berjalan di atas game — baik saat gambar HUD
+         berukuran pas layar penuh maupun saat rasio gambarnya berbeda. -->
     <FrameLayout
         android:id="@+id/previewArea"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#000000">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imgHud"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
+            android:background="#1A1A1A"
             android:contentDescription="Gambar HUD acuan mapping" />
     </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Hint kecil melayang di pojok atas, tidak memakan tempat -->
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <Button
-            android:id="@+id/btnTambahTombol"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/tambah_tombol" />
-
-        <Button
-            android:id="@+id/btnPresetWasd"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:text="Preset WASD" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="6dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ukuran tombol terpilih:"
-            android:textColor="@color/text_light"
-            android:textSize="12sp" />
-
-        <SeekBar
-            android:id="@+id/seekUkuran"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="100" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnSimpanMapping"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_gravity="top|start"
         android:layout_margin="10dp"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/text_light"
-        android:text="@string/simpan" />
+        android:background="#99000000"
+        android:padding="8dp"
+        android:text="Geser tombol = pindah posisi. Tap tombol = ganti key/ukuran/hapus."
+        android:textColor="#DDDDDD"
+        android:textSize="10sp" />
 
-</LinearLayout>
+    <!-- Panel kontrol melayang di bagian bawah layar, transparan, di atas gambar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#CC121212">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <Button
+                    android:id="@+id/btnTambahTombol"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="@string/tambah_tombol" />
+
+                <Button
+                    android:id="@+id/btnPresetWasd"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Preset WASD" />
+
+                <Button
+                    android:id="@+id/btnPilihHud"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Pilih Gambar HUD" />
+
+                <Button
+                    android:id="@+id/btnHapusHud"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:text="Hapus HUD" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ukuran:"
+                android:textColor="@color/text_light"
+                android:textSize="11sp" />
+
+            <SeekBar
+                android:id="@+id/seekUkuran"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSimpanMapping"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/primary"
+            android:textColor="@color/text_light"
+            android:textSize="13sp"
+            android:text="@string/simpan" />
+    </LinearLayout>
+
+</FrameLayout>

@@ -32,6 +32,10 @@ class OverlayService : Service() {
         const val EXTRA_LABEL = "extra_label"
         const val CHANNEL_ID = "mobibawah_overlay"
         const val NOTIF_ID = 1001
+        // Dipakai MainActivity untuk tahu apakah overlay sedang berjalan,
+        // supaya tombol "Matikan Mobibawah" tahu harus aktif atau tidak.
+        var isRunning: Boolean = false
+            private set
     }
 
     private lateinit var windowManager: WindowManager
@@ -42,6 +46,7 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        isRunning = true
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -190,6 +195,7 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isRunning = false
         overlayViews.forEach { runCatching { windowManager.removeView(it) } }
         overlayViews.clear()
     }

@@ -6,8 +6,13 @@ package com.mobibawah.app.model
  * HOLD     -> tap ditahan (stroke kontinu) selama jari masih menekan tombol,
  *             cocok untuk gerakan W/A/S/D yang perlu "ditahan" di game.
  * TOGGLE   -> sekali tekan = tahan terus sampai ditekan lagi (mis. auto-run).
+ * MACRO    -> tap super cepat berulang-ulang selama tombol dinyalakan (toggle),
+ *             cocok untuk auto-tap/rapid fire. Tombolnya sendiri tetap bisa
+ *             digeser/dipindah di mode edit seperti tombol lain, dan saat
+ *             dipakai tidak mengganggu touchpad/tombol lain karena tiap
+ *             elemen overlay adalah window terpisah.
  */
-enum class ActionType { TAP, HOLD, TOGGLE }
+enum class ActionType { TAP, HOLD, TOGGLE, MACRO }
 
 /**
  * Representasi satu tombol keyboard virtual mengambang di layar.
@@ -28,7 +33,10 @@ data class ButtonMapping(
     var size: Float = 0.08f,          // diameter tombol relatif terhadap lebar layar
     var targetX: Float = 0.1f,        // titik yang disentuh di layar game
     var targetY: Float = 0.7f,
-    var actionType: ActionType = ActionType.HOLD
+    var actionType: ActionType = ActionType.HOLD,
+    // Jeda antar tap (milidetik) khusus untuk actionType = MACRO. Semakin
+    // kecil, semakin cepat tap-nya (mis. 50ms = 20 tap per detik).
+    var macroIntervalMs: Long = 80L
 )
 
 /**

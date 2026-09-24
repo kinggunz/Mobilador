@@ -10,4 +10,23 @@
     <string name="tambah_tombol">+ Tambah Tombol</string>
     <string name="simpan">Simpan</string>
     <string name="hapus">Hapus</string>
+    <string name="terms_body"><![CDATA[
+1. TENTANG APLIKASI
+Mobibawah adalah alat bantu pemetaan tombol sentuh (keymapper) yang dibuat untuk kebutuhan pribadi, memudahkan kontrol aplikasi/game Android memakai tombol keyboard virtual dan touchpad mouse buatan sendiri.
+
+2. TANGGUNG JAWAB PENGGUNA
+Pengguna bertanggung jawab penuh atas pemakaian aplikasi ini, termasuk memastikan pemakaiannya tidak melanggar Syarat & Ketentuan aplikasi/game pihak ketiga yang dipetakan. Sebagian game daring bisa saja melarang penggunaan alat bantu kontrol pihak ketiga — periksa dulu kebijakan game yang bersangkutan.
+
+3. TIDAK ADA JAMINAN
+Aplikasi ini disediakan apa adanya ("as is") tanpa jaminan bebas dari galat (bug), tanpa jaminan kompatibilitas dengan semua perangkat/aplikasi, dan tanpa jaminan hasil tertentu.
+
+4. DATA & AKUN
+Akun (username/password) yang dibuat di aplikasi ini disimpan secara lokal di perangkatmu sendiri, bukan dikirim ke server manapun.
+
+5. PERUBAHAN
+Ketentuan ini bisa diperbarui sewaktu-waktu mengikuti perkembangan aplikasi.
+
+Dengan mencentang kotak persetujuan dan menekan tombol "SETUJU & LANJUTKAN", kamu menyatakan telah membaca dan memahami ketentuan di atas.
+]]></string>
+    <string name="credit_text">Credit by Gunz</string>
 </resources>

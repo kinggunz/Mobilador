@@ -20,10 +20,21 @@
         android:theme="@style/Theme.Mobibawah"
         android:supportsRtl="true">
 
+        <!--
+          SEMUA activity di bawah ini dikunci screenOrientation="landscape".
+          Ini WAJIB dan disengaja: posisi & ukuran tombol mapping disimpan
+          sebagai persentase lebar/tinggi layar. Kalau ada satu saja layar
+          yang boleh portrait, sumbu lebar/tinggi yang dipakai untuk
+          menghitung persentase akan tertukar dibanding saat overlay
+          sungguhan berjalan (selalu landscape mengikuti game) — akibatnya
+          tombol bisa meleset/bug. Mengunci semuanya landscape memastikan
+          apa yang diatur di editor SAMA PERSIS saat dipakai di game.
+        -->
+
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.LauncherActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:theme="@style/Theme.Mobibawah"
             android:screenOrientation="landscape"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout">
             <intent-filter>
@@ -32,13 +43,37 @@
             </intent-filter>
         </activity>
 
-        <!--
-          WAJIB landscape: previewArea di layar ini merepresentasikan layar
-          game yang juga selalu landscape saat overlay berjalan (lihat
-          OverlayService). Kalau editor dibiarkan portrait, sumbu lebar/tinggi
-          yang dipakai untuk menghitung persentase posisi tombol akan tertukar
-          dan mapping-nya jadi meleset saat dipasang di game (landscape).
-        -->
+        <activity
+            android:name=".ui.AuthActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
+
+        <activity
+            android:name=".ui.TermsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
+
+        <activity
+            android:name=".ui.AppPickerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
+
+        <activity
+            android:name=".ui.AppDetailActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
+
         <activity
             android:name=".ui.MappingEditorActivity"
             android:exported="false"

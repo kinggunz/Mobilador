@@ -1,123 +1,110 @@
 package com.mobibawah.app.ui
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.view.accessibility.AccessibilityManager
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
+import android.widget.HorizontalScrollView
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.mobibawah.app.R
-import com.mobibawah.app.model.AppInfo
+import com.mobibawah.app.data.ProfileRepository
 import com.mobibawah.app.overlay.OverlayService
-import com.mobibawah.app.service.MobiAccessibilityService
 
+/**
+ * Menu utama (hub) Mobibawah:
+ *  - Logo animasi (pulse) di header.
+ *  - Tombol "+" besar di tengah -> buka AppPickerActivity untuk memilih game.
+ *  - Baris "Game Tersimpan": game yang sudah pernah dipetakan, tap untuk
+ *    langsung ke AppDetailActivity game itu.
+ *  - Tombol "Matikan Mobibawah" untuk menghentikan overlay yang sedang berjalan.
+ */
 class MainActivity : AppCompatActivity() {
-
-    private var selectedApp: AppInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerApps)
-        val btnOverlayPermission = findViewById<Button>(R.id.btnOverlayPermission)
-        val btnAccessibility = findViewById<Button>(R.id.btnAccessibility)
-        val btnAturMapping = findViewById<Button>(R.id.btnAturMapping)
-        val btnMulai = findViewById<Button>(R.id.btnMulai)
+        animateLogo(findViewById(R.id.imgLogoMain))
 
-        val apps = loadInstalledApps()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = AppListAdapter(apps) { selectedApp = it }
+        findViewById<Button>(R.id.btnTambahApp).setOnClickListener {
+            startActivity(Intent(this, AppPickerActivity::class.java))
+        }
 
-        btnOverlayPermission.setOnClickListener { requestOverlayPermission() }
-        btnAccessibility.setOnClickListener { openAccessibilitySettings() }
+        findViewById<Button>(R.id.btnOverlayPermission).setOnClickListener { requestOverlayPermission() }
+        findViewById<Button>(R.id.btnAccessibility).setOnClickListener { openAccessibilitySettings() }
 
-        btnAturMapping.setOnClickListener {
-            val app = selectedApp
-            if (app == null) {
-                Toast.makeText(this, "Pilih aplikasi/game dulu", Toast.LENGTH_SHORT).show()
+        findViewById<Button>(R.id.btnMatikanMobi).setOnClickListener {
+            if (OverlayService.isRunning) {
+                stopService(Intent(this, OverlayService::class.java))
+                Toast.makeText(this, "Mobibawah dimatikan", Toast.LENGTH_SHORT).show()
             } else {
-                val intent = Intent(this, MappingEditorActivity::class.java)
-                intent.putExtra(MappingEditorActivity.EXTRA_PACKAGE, app.packageName)
-                intent.putExtra(MappingEditorActivity.EXTRA_LABEL, app.label)
-                startActivity(intent)
+                Toast.makeText(this, "Mobibawah belum berjalan", Toast.LENGTH_SHORT).show()
             }
         }
-
-        btnMulai.setOnClickListener { handleMulai() }
     }
 
-    private fun handleMulai() {
-        val app = selectedApp
-        if (app == null) {
-            Toast.makeText(this, "Pilih aplikasi/game dulu", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (!Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, "Izinkan overlay dulu (tombol di atas)", Toast.LENGTH_LONG).show()
-            requestOverlayPermission()
-            return
-        }
-        if (!isAccessibilityServiceEnabled()) {
-            Toast.makeText(this, "Aktifkan Aksesibilitas Mobibawah dulu", Toast.LENGTH_LONG).show()
-            openAccessibilitySettings()
-            return
-        }
+    override fun onResume() {
+        super.onResume()
+        renderFavoriteApps()
+    }
 
-        // Semua izin siap -> jalankan overlay service, yang otomatis membuka game
-        val serviceIntent = Intent(this, OverlayService::class.java)
-        serviceIntent.putExtra(OverlayService.EXTRA_PACKAGE, app.packageName)
-        serviceIntent.putExtra(OverlayService.EXTRA_LABEL, app.label)
-        startForegroundService(serviceIntent)
+    /** Animasi logo sederhana: membesar-mengecil pelan berulang (bernapas). */
+    private fun animateLogo(view: ImageView) {
+        val animator = ObjectAnimator.ofFloat(view, "scaleX", 1f, 1.15f, 1f)
+        val animatorY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 1.15f, 1f)
+        listOf(animator, animatorY).forEach {
+            it.duration = 1600
+            it.repeatCount = ValueAnimator.INFINITE
+            it.start()
+        }
+    }
 
-        // Minimalkan Mobibawah supaya game tampil di depan
-        moveTaskToBack(true)
+    /** Tampilkan daftar game yang sudah pernah dipetakan sebagai ikon-ikon kecil. */
+    private fun renderFavoriteApps() {
+        val label = findViewById<TextView>(R.id.txtFavoritLabel)
+        val scroll = findViewById<HorizontalScrollView>(R.id.scrollFavorit)
+        val row = findViewById<LinearLayout>(R.id.rowFavorit)
+        row.removeAllViews()
+
+        val profiles = ProfileRepository(this).getAllProfiles()
+        if (profiles.isEmpty()) {
+            label.visibility = View.GONE
+            scroll.visibility = View.GONE
+            return
+        }
+        label.visibility = View.VISIBLE
+        scroll.visibility = View.VISIBLE
+
+        val inflater = LayoutInflater.from(this)
+        profiles.forEach { profile ->
+            val itemView = inflater.inflate(R.layout.item_favorite_app, row, false)
+            val icon = runCatching { packageManager.getApplicationIcon(profile.packageName) }.getOrNull()
+            itemView.findViewById<ImageView>(R.id.imgFavIcon).setImageDrawable(icon)
+            itemView.findViewById<TextView>(R.id.txtFavLabel).text = profile.appLabel
+            itemView.setOnClickListener {
+                val intent = Intent(this, AppDetailActivity::class.java)
+                intent.putExtra(AppDetailActivity.EXTRA_PACKAGE, profile.packageName)
+                intent.putExtra(AppDetailActivity.EXTRA_LABEL, profile.appLabel)
+                startActivity(intent)
+            }
+            row.addView(itemView)
+        }
     }
 
     private fun requestOverlayPermission() {
-        val intent = Intent(
-            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-            Uri.parse("package:$packageName")
-        )
-        startActivity(intent)
+        startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
     }
 
     private fun openAccessibilitySettings() {
         startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-    }
-
-    private fun isAccessibilityServiceEnabled(): Boolean {
-        // Cek 1: instance service statis sudah terisi (paling akurat setelah connect)
-        if (MobiAccessibilityService.instance != null) return true
-
-        // Cek 2: cocokkan lewat daftar layanan aksesibilitas yang aktif di sistem
-        val am = getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
-        val enabledServices = Settings.Secure.getString(
-            contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-        ) ?: return false
-        val target = "$packageName/${MobiAccessibilityService::class.java.name}"
-        return enabledServices.split(":").any { it.equals(target, ignoreCase = true) }
-    }
-
-    private fun loadInstalledApps(): List<AppInfo> {
-        val pm = packageManager
-        val mainIntent = Intent(Intent.ACTION_MAIN, null).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
-        val resolved = pm.queryIntentActivities(mainIntent, PackageManager.MATCH_ALL)
-        return resolved
-            .filter { it.activityInfo.packageName != packageName }
-            .map {
-                AppInfo(
-                    packageName = it.activityInfo.packageName,
-                    label = it.loadLabel(pm).toString(),
-                    icon = it.loadIcon(pm)
-                )
-            }
-            .distinctBy { it.packageName }
-            .sortedBy { it.label.lowercase() }
     }
 }
