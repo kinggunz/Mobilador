@@ -1,4 +1,4 @@
-name: Build Mobibawah APK
+name: Build Mobilador APK
 
 on:
   push:
@@ -8,34 +8,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout kode
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
           java-version: '17'
-
-      # Runner GitHub sudah punya Android SDK bawaan (ANDROID_HOME sudah di-set).
-      # Kita cuma perlu pastikan platform 35 & build-tools yang dibutuhkan terpasang,
-      # tanpa memakai action pihak ketiga yang sering gagal saat download ulang SDK.
-      - name: Pastikan platform & build-tools Android 35 terpasang
-        run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.7'
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Build APK debug
+      - name: Build Debug APK
         run: gradle assembleDebug --stacktrace
 
-      - name: Upload APK sebagai artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mobibawah-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: Mobilador-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
