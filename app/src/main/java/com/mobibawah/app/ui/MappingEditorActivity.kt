@@ -1,11 +1,15 @@
 package com.mobibawah.app.ui
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewTreeObserver
 import android.widget.Button
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -13,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.mobibawah.app.R
+import com.mobibawah.app.data.MappingCodeUtil
 import com.mobibawah.app.data.ProfileRepository
 import com.mobibawah.app.model.ButtonMapping
 import com.mobibawah.app.model.KeyCatalog
@@ -74,6 +79,8 @@ class MappingEditorActivity : AppCompatActivity() {
         val btnSimpan = findViewById<Button>(R.id.btnSimpanMapping)
         val btnPilihHud = findViewById<Button>(R.id.btnPilihHud)
         val btnHapusHud = findViewById<Button>(R.id.btnHapusHud)
+        val btnBagikanKode = findViewById<Button>(R.id.btnBagikanKode)
+        val btnImporKode = findViewById<Button>(R.id.btnImporKode)
 
         loadHudImageIfAny()
 
@@ -87,6 +94,8 @@ class MappingEditorActivity : AppCompatActivity() {
 
         btnPilihHud.setOnClickListener { pickImageLauncher.launch("image/*") }
         btnHapusHud.setOnClickListener { clearHudImage() }
+        btnBagikanKode.setOnClickListener { showShareCodeDialog() }
+        btnImporKode.setOnClickListener { showImportCodeDialog() }
 
         btnTambah.setOnClickListener {
             KeyPickerDialog.show(this) { keyName ->
@@ -122,6 +131,73 @@ class MappingEditorActivity : AppCompatActivity() {
             Toast.makeText(this, "Mapping untuk ${profile.appLabel} disimpan", Toast.LENGTH_SHORT).show()
             finish()
         }
+    }
+
+    // ---------- Kode mapping (bagikan/impor ke orang lain) ----------
+
+    /** Buat kode dari mapping saat ini, tampilkan di dialog dengan tombol Salin. */
+    private fun showShareCodeDialog() {
+        if (profile.buttons.isEmpty()) {
+            Toast.makeText(this, "Belum ada tombol untuk dibagikan", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val code = MappingCodeUtil.encode(
+            buttons = profile.buttons,
+            touchpadEnabled = profile.touchpadEnabled,
+            touchpadX = profile.touchpadX, touchpadY = profile.touchpadY,
+            touchpadWidth = profile.touchpadWidth, touchpadHeight = profile.touchpadHeight,
+            mouseSensitivity = profile.mouseSensitivity
+        )
+
+        val input = EditText(this).apply {
+            setText(code)
+            isFocusable = false
+            setPadding(24, 24, 24, 24)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Kode Mapping Kamu")
+            .setMessage("Kirim kode ini ke temanmu. Mereka tinggal tempel di tombol \"Impor Kode\" di game apa saja untuk memakai layout tombol yang sama persis.")
+            .setView(input)
+            .setPositiveButton("Salin") { _, _ ->
+                val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                cm.setPrimaryClip(ClipData.newPlainText("Kode Mapping Mobibawah", code))
+                Toast.makeText(this, "Kode disalin ke clipboard", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Tutup", null)
+            .show()
+    }
+
+    /** Tempel kode dari orang lain, ganti mapping saat ini (dengan konfirmasi). */
+    private fun showImportCodeDialog() {
+        val input = EditText(this).apply {
+            hint = "Tempel kode mapping di sini"
+            setPadding(24, 24, 24, 24)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Impor Kode Mapping")
+            .setMessage("Ini akan MENGGANTI semua tombol yang sedang kamu atur di sini dengan layout dari kode tersebut.")
+            .setView(input)
+            .setPositiveButton("Pasang") { _, _ ->
+                val imported = MappingCodeUtil.decode(input.text.toString())
+                if (imported == null) {
+                    Toast.makeText(this, "Kode tidak valid", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                profile.buttons.clear()
+                profile.buttons.addAll(imported.buttons)
+                profile.touchpadEnabled = imported.touchpadEnabled
+                profile.touchpadX = imported.touchpadX
+                profile.touchpadY = imported.touchpadY
+                profile.touchpadWidth = imported.touchpadWidth
+                profile.touchpadHeight = imported.touchpadHeight
+                profile.mouseSensitivity = imported.mouseSensitivity
+                clearAllButtonViews()
+                profile.buttons.forEach { addButtonView(it) }
+                Toast.makeText(this, "Mapping berhasil dipasang, jangan lupa Simpan", Toast.LENGTH_LONG).show()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     // ---------- Gambar HUD custom ----------
@@ -215,7 +291,7 @@ class MappingEditorActivity : AppCompatActivity() {
 
         AlertDialog.Builder(this)
             .setTitle("Tombol: ${mapping.label}")
-            .setItems(arrayOf("Ganti Nama/Key", "Ganti Tipe Aksi (Tap/Hold/Toggle)", "Hapus Tombol")) { _, which ->
+            .setItems(arrayOf("Ganti Nama/Key", "Ganti Tipe Aksi (Tap/Hold/Toggle/Macro)", "Hapus Tombol")) { _, which ->
                 when (which) {
                     0 -> KeyPickerDialog.show(this) { keyName ->
                         mapping.label = keyName

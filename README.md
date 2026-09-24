@@ -41,7 +41,42 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
-## Fitur terbaru (update besar)
+## Update terbaru (perbaikan besar)
+
+- **PERBAIKAN UTAMA — Keyboard fisik (Bluetooth & kabel/OTG) kini beneran
+  berfungsi.** Sebelumnya Mobibawah hanya membaca sentuhan di layar, tidak
+  pernah membaca tombol keyboard fisik sama sekali — itu sebabnya mapping
+  "tidak jalan" saat dipakai dengan keyboard sungguhan. Sekarang
+  `MobiAccessibilityService` membaca setiap tombol fisik yang ditekan
+  (lewat `onKeyEvent`, diaktifkan dengan `canRequestFilterKeyEvents`) dan
+  mencocokkannya ke key yang kamu atur (W/A/S/D/dst) — aksinya
+  (Tap/Hold/Toggle/Macro) persis sama seperti kalau kamu sentuh tombol di
+  layar. Bluetooth dan kabel/OTG diperlakukan sama oleh Android, jadi
+  keduanya otomatis didukung tanpa kode terpisah.
+- **Toggle matikan mouse-geser**: ada ikon panah kecil di tengah touchpad
+  (sesuai referensi gambar) — tap cepat (tanpa menggeser) di situ untuk
+  menyalakan/mematikan mode mouse-geser. Saat dimatikan, area touchpad
+  benar-benar "tembus" (tidak menghalangi sentuhan ke game sama sekali).
+- **Mapping tersimpan permanen** — ini sebenarnya sudah berjalan sejak
+  awal (disimpan di penyimpanan aplikasi, bukan memori sementara), jadi
+  pengaturanmu tetap ada walau aplikasi ditutup total atau HP di-restart;
+  hanya hilang kalau data aplikasi dihapus manual atau aplikasi di-uninstall.
+- **Kode Mapping** — di layar "Atur Mapping Tombol" ada tombol **Bagikan
+  Kode** (membuat kode teks dari layout tombolmu, tinggal disalin & kirim
+  ke teman) dan **Impor Kode** (tempel kode dari teman untuk langsung
+  memakai layout yang sama, di game apa pun yang sedang mereka atur).
+- **Dukungan Android**: minSdk tetap 26 (Android 8.0) — ini sudah mencakup
+  hampir seluruh perangkat Android aktif saat ini (8.0 s/d 15). Menurunkan
+  lagi ke versi yang jauh lebih lama tidak disarankan karena beberapa API
+  penting (adaptive icon, foreground service khusus, dll) baru ada di 26+.
+- **Soal mouse fisik**: kursor mouse USB/Bluetooth sudah otomatis berfungsi
+  di level sistem Android (bukan sesuatu yang perlu dikodekan aplikasi ini)
+  — bisa dipakai menavigasi menu Mobibawah maupun UI Android seperti biasa.
+  Fitur "touchpad" di Mobibawah adalah simulasi mouse-look lewat GESER JARI
+  di layar sentuh, karena itulah yang tidak tersedia secara native di game
+  berbasis sentuhan.
+
+## Update sebelumnya
 
 - **Wajib daftar akun dulu** (username & password) sebelum bisa pakai —
   akun ini **lokal di perangkat saja** (bukan online), tersimpan terenkripsi

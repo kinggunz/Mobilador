@@ -89,8 +89,26 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
                     android:textSize="11sp"
                     android:text="Hapus HUD" />
+
+                <Button
+                    android:id="@+id/btnBagikanKode"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Bagikan Kode" />
+
+                <Button
+                    android:id="@+id/btnImporKode"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:text="Impor Kode" />
             </LinearLayout>
         </HorizontalScrollView>
 

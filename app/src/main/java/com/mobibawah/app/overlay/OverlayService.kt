@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import com.mobibawah.app.R
 import com.mobibawah.app.data.ProfileRepository
 import com.mobibawah.app.model.MappingProfile
+import com.mobibawah.app.service.MobiAccessibilityService
 
 /**
  * Service yang benar-benar menggambar tombol keyboard mengambang + touchpad
@@ -60,6 +61,12 @@ class OverlayService : Service() {
 
         // 2) Muat mapping tersimpan untuk game ini
         val profile = ProfileRepository(this).load(pkg ?: "unknown", label)
+
+        // 2b) Daftarkan mapping ini ke Accessibility Service supaya KEYBOARD
+        // FISIK (Bluetooth/kabel) juga bisa memicu aksi yang sama seperti
+        // tombol di layar — ini bagian yang tadinya hilang & bikin keyboard
+        // fisik tidak berfungsi sama sekali.
+        MobiAccessibilityService.instance?.setActiveMapping(profile.buttons)
 
         // 3) Gambar semua tombol + touchpad + tombol mengambang kontrol
         drawButtons(profile)
@@ -118,6 +125,23 @@ class OverlayService : Service() {
         params.gravity = Gravity.TOP or Gravity.START
         params.x = (profile.touchpadX * screenW).toInt()
         params.y = (profile.touchpadY * screenH).toInt()
+
+        // Tap cepat (tanpa geser) di tengah touchpad = matikan/nyalakan mode
+        // mouse-geser. Saat DIMATIKAN, window ditambah FLAG_NOT_TOUCHABLE
+        // supaya sentuhan di area itu langsung "tembus" ke game di
+        // bawahnya (bukan cuma berhenti menggeser, tapi benar tidak
+        // menghalangi sama sekali) — persis seperti ikon panah nonaktif.
+        pad.onToggleEnabled = { enabled ->
+            params.flags = if (enabled) {
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            } else {
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            }
+            runCatching { windowManager.updateViewLayout(pad, params) }
+        }
+
         windowManager.addView(pad, params)
         overlayViews.add(pad)
     }
@@ -196,6 +220,7 @@ class OverlayService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
+        MobiAccessibilityService.instance?.clearActiveMapping()
         overlayViews.forEach { runCatching { windowManager.removeView(it) } }
         overlayViews.clear()
     }
