@@ -44,6 +44,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnPesan).setOnClickListener {
             startActivity(Intent(this, PesanActivity::class.java))
         }
+        findViewById<Button>(R.id.btnProfil).setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
+        findViewById<Button>(R.id.btnDashboard).setOnClickListener {
+            startActivity(Intent(this, DashboardActivity::class.java))
+        }
 
         findViewById<Button>(R.id.btnMatikanMobi).setOnClickListener {
             if (OverlayService.isRunning) {

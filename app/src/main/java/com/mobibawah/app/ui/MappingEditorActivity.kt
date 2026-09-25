@@ -156,17 +156,33 @@ class MappingEditorActivity : AppCompatActivity() {
 
     private fun showTutorialDialog() {
         val pesan = """
-            • + TAMBAH TOMBOL: pilih key (W/A/S/D/dst), lalu geser tombolnya ke posisi yang pas persis di atas tombol asli game.
+            DASAR
+            • + TAMBAH TOMBOL: pilih key manual dari daftar, ATAU pilih "🎯 Deteksi Otomatis" lalu tekan langsung tombol fisiknya — otomatis terisi & jadi bukti keyboardmu terbaca.
             • PRESET WASD: langsung buat 4 tombol arah + Space + Shift, tinggal digeser ulang posisinya.
-            • Tap tombol yang sudah ada = ganti nama key, ganti tipe aksi (Tap/Hold/Toggle/Macro), atau hapus.
-              - TAP: sekali sentuh sekali aksi.
-              - HOLD: ditahan selama jari menekan (cocok gerak jalan W/A/S/D).
-              - TOGGLE: sekali tekan = nyala terus sampai ditekan lagi.
-              - MACRO: sekali tekan = tap super cepat berulang otomatis (auto-tap) sampai ditekan lagi.
-            • Kotak biru "➤ MOUSE / GESER LAYAR" itu TOUCHPAD, sudah otomatis ada. Geser untuk pindah posisi, tap untuk atur ukuran & sensitivitas.
+            • Tap tombol yang sudah ada = ganti nama key, ganti tipe aksi, atau hapus.
+
+            TIPE AKSI TOMBOL
+            • TAP: sekali sentuh sekali aksi.
+            • HOLD: ditahan selama jari/tombol ditekan (cocok gerak jalan W/A/S/D).
+            • TOGGLE: sekali tekan = nyala terus sampai ditekan lagi.
+            • MACRO: sekali tekan = tap super cepat berulang otomatis (auto-tap) sampai ditekan lagi — tombolnya tetap bisa digeser & tidak mengganggu tombol/touchpad lain.
+
+            KEYBOARD & MOUSE FISIK
+            • Semua tombol di atas juga otomatis bisa dipicu lewat KEYBOARD FISIK (Bluetooth maupun kabel/OTG), asal Layanan Aksesibilitas sudah diaktifkan dan key-nya cocok dengan yang kamu atur di sini.
+            • Mouse Bluetooth/USB: klik & drag umumnya sudah otomatis terbaca sistem seperti sentuhan biasa.
+
+            TOUCHPAD (MOUSE-GESER)
+            • Kotak biru "➤ MOUSE / GESER LAYAR" otomatis ada, tidak perlu ditambah manual. Geser untuk pindah posisi, tap sekali (tanpa geser) untuk buka pengaturan lebar/tinggi/sensitivitas/aktif-nonaktif.
+            • Saat MAIN game: tap cepat di ikon panah tengah touchpad untuk nyala/matikan mode geser kapan saja.
+
+            GAMBAR HUD & KODE MAPPING
             • PILIH GAMBAR HUD: opsional, ambil screenshot HUD game dari galeri sebagai acuan biar taruh tombolnya presisi.
-            • BAGIKAN KODE / IMPOR KODE: kirim/terima layout tombol ke & dari teman lewat kode teks pendek.
-            • Tombol ▼/▲ di pojok kanan bawah: sembunyikan/tampilkan bilah menu ini, biar seluruh layar bebas dipakai naruh tombol.
+            • BAGIKAN KODE: buat kode teks pendek dari layout tombolmu, salin & kirim ke teman.
+            • IMPOR KODE: tempel kode dari teman untuk langsung memakai layout yang sama di game yang sedang kamu atur.
+
+            LAIN-LAIN
+            • Tombol ▲/▼ di atas panel: sembunyikan/tampilkan bilah menu ini, biar seluruh layar bebas dipakai naruh tombol.
+            • Menu utama > Dashboard: cek keyboard/mouse apa saja yang sedang terhubung ke HP, plus tes langsung tekan tombol/gerak mouse untuk buktikan semuanya terbaca dengan benar.
             • Jangan lupa tekan SIMPAN setelah selesai mengatur.
         """.trimIndent()
 

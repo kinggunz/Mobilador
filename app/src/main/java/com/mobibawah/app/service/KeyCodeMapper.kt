@@ -48,7 +48,37 @@ object KeyCodeMapper {
         put(KeyEvent.KEYCODE_ESCAPE, "ESC")
         put(KeyEvent.KEYCODE_F1, "F1"); put(KeyEvent.KEYCODE_F2, "F2")
         put(KeyEvent.KEYCODE_F3, "F3"); put(KeyEvent.KEYCODE_F4, "F4")
-        put(KeyEvent.KEYCODE_F5, "F5")
+        put(KeyEvent.KEYCODE_F5, "F5"); put(KeyEvent.KEYCODE_F6, "F6")
+        put(KeyEvent.KEYCODE_F7, "F7"); put(KeyEvent.KEYCODE_F8, "F8")
+        put(KeyEvent.KEYCODE_F9, "F9"); put(KeyEvent.KEYCODE_F10, "F10")
+        put(KeyEvent.KEYCODE_F11, "F11"); put(KeyEvent.KEYCODE_F12, "F12")
+
+        // Simbol & tanda baca umum -> banyak dipakai sebagai keybind di game PC
+        put(KeyEvent.KEYCODE_COMMA, ",")
+        put(KeyEvent.KEYCODE_PERIOD, ".")
+        put(KeyEvent.KEYCODE_SLASH, "/")
+        put(KeyEvent.KEYCODE_BACKSLASH, "\\")
+        put(KeyEvent.KEYCODE_SEMICOLON, ";")
+        put(KeyEvent.KEYCODE_APOSTROPHE, "'")
+        put(KeyEvent.KEYCODE_GRAVE, "`")
+        put(KeyEvent.KEYCODE_MINUS, "-")
+        put(KeyEvent.KEYCODE_EQUALS, "=")
+        put(KeyEvent.KEYCODE_LEFT_BRACKET, "[")
+        put(KeyEvent.KEYCODE_RIGHT_BRACKET, "]")
+        put(KeyEvent.KEYCODE_CAPS_LOCK, "CAPSLOCK")
+        put(KeyEvent.KEYCODE_DEL, "BACKSPACE")
+        put(KeyEvent.KEYCODE_FORWARD_DEL, "DELETE")
+        put(KeyEvent.KEYCODE_PAGE_UP, "PAGEUP")
+        put(KeyEvent.KEYCODE_PAGE_DOWN, "PAGEDOWN")
+        put(KeyEvent.KEYCODE_MOVE_HOME, "HOME")
+        put(KeyEvent.KEYCODE_MOVE_END, "END")
+
+        // Angka numpad -> banyak keyboard eksternal/Bluetooth full-size punya ini
+        put(KeyEvent.KEYCODE_NUMPAD_0, "NUM0"); put(KeyEvent.KEYCODE_NUMPAD_1, "NUM1")
+        put(KeyEvent.KEYCODE_NUMPAD_2, "NUM2"); put(KeyEvent.KEYCODE_NUMPAD_3, "NUM3")
+        put(KeyEvent.KEYCODE_NUMPAD_4, "NUM4"); put(KeyEvent.KEYCODE_NUMPAD_5, "NUM5")
+        put(KeyEvent.KEYCODE_NUMPAD_6, "NUM6"); put(KeyEvent.KEYCODE_NUMPAD_7, "NUM7")
+        put(KeyEvent.KEYCODE_NUMPAD_8, "NUM8"); put(KeyEvent.KEYCODE_NUMPAD_9, "NUM9")
     }
 
     /** Nama key Mobibawah untuk sebuah kode tombol fisik, atau null kalau tidak dikenal/tidak dipetakan. */

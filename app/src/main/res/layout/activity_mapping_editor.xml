@@ -51,30 +51,38 @@
         android:textStyle="bold"
         android:textSize="16sp" />
 
-    <!-- Tombol V (▼/▲) untuk sembunyikan/tampilkan panel bawah, selalu
-         terlihat sendiri di luar panel supaya bisa dipakai kapan saja
-         untuk membebaskan seluruh layar buat menaruh tombol. -->
-    <TextView
-        android:id="@+id/btnToggleMenu"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="10dp"
-        android:background="@drawable/shape_overlay_button"
-        android:gravity="center"
-        android:text="▼"
-        android:textColor="@color/text_light"
-        android:textStyle="bold"
-        android:textSize="14sp" />
-
-    <!-- Panel kontrol melayang di bagian bawah layar, transparan, di atas gambar -->
+    <!-- Tombol V (▲/▼) untuk sembunyikan/tampilkan panel bawah. Dibungkus
+         satu wadah bersama panelBawah supaya tombolnya SELALU menempel
+         tepat di atas panel (persis di atas "Pilih Gambar HUD"): saat
+         panel ditutup, wadah ini otomatis mengecil jadi cuma setinggi
+         tombol ini saja, jadi tombolnya turun ke bawah layar — tap lagi
+         untuk menaikkan/membuka panelnya kembali. -->
     <LinearLayout
-        android:id="@+id/panelBawah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:background="#CC121212">
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/btnToggleMenu"
+            android:layout_width="52dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/shape_pull_tab"
+            android:gravity="center"
+            android:text="▼"
+            android:textColor="@color/text_light"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+
+        <!-- Panel kontrol melayang di bagian bawah layar, transparan, di atas gambar -->
+        <LinearLayout
+            android:id="@+id/panelBawah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#CC121212">
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -175,6 +183,7 @@
             android:textColor="@color/text_light"
             android:textSize="13sp"
             android:text="@string/simpan" />
+        </LinearLayout>
     </LinearLayout>
 
 </FrameLayout>

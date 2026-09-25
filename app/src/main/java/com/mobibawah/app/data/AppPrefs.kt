@@ -17,6 +17,7 @@ object AppPrefs {
     private const val KEY_USERNAME = "username"
     private const val KEY_PASSWORD_HASH = "password_hash"
     private const val KEY_TERMS_ACCEPTED = "terms_accepted"
+    private const val KEY_AVATAR_PATH = "avatar_path"
 
     private fun prefs(context: Context) =
         context.applicationContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -39,6 +40,21 @@ object AppPrefs {
     }
 
     fun getUsername(context: Context): String? = prefs(context).getString(KEY_USERNAME, null)
+
+    fun getAvatarPath(context: Context): String? = prefs(context).getString(KEY_AVATAR_PATH, null)
+
+    fun setAvatarPath(context: Context, path: String) {
+        prefs(context).edit().putString(KEY_AVATAR_PATH, path).apply()
+    }
+
+    fun changePassword(context: Context, newPassword: String) {
+        prefs(context).edit().putString(KEY_PASSWORD_HASH, hash(newPassword)).apply()
+    }
+
+    /** Hapus akun lokal (username/password/avatar) — TIDAK menghapus mapping game yang tersimpan. */
+    fun resetAccount(context: Context) {
+        prefs(context).edit().clear().apply()
+    }
 
     fun checkLogin(context: Context, username: String, password: String): Boolean {
         val savedUser = prefs(context).getString(KEY_USERNAME, null) ?: return false

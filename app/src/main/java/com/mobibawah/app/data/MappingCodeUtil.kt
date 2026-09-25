@@ -7,19 +7,21 @@ import com.mobibawah.app.model.ButtonMapping
 
 /**
  * Mengubah SATU set mapping tombol (+ pengaturan touchpad) menjadi kode
- * teks SEPENDEK MUNGKIN yang gampang disalin & dikirim ke orang lain:
+ * teks SEPENDEK MUNGKIN:
  *  - Struktur JSON pakai ARRAY (bukan object dengan nama field panjang).
- *  - Semua angka desimal dibulatkan 3 angka di belakang koma dulu supaya
- *    tidak muncul angka "sampah" akibat pembulatan Float->Double
- *    (mis. 0.6200000047683716 dipangkas jadi 0.62).
- *  - Tipe aksi disimpan sebagai angka index (0=TAP,1=HOLD,2=TOGGLE,3=MACRO),
- *    bukan teks "HOLD"/"TOGGLE" dst.
- *  - Base64 pakai NO_PADDING + NO_WRAP + URL_SAFE supaya tidak ada
- *    karakter '+', '/', '=' yang kadang bikin ribet saat disalin manual.
+ *  - Angka desimal dibulatkan 2 angka belakang koma (cukup presisi untuk
+ *    posisi tombol, dan memangkas banyak karakter dibanding 3 desimal).
+ *  - Tipe aksi & label disimpan seringkas mungkin: label HANYA disimpan
+ *    kalau berbeda dari nama key (kasus paling umum: label == keyName,
+ *    jadi tidak perlu disimpan dua kali).
+ *  - macroIntervalMs HANYA disimpan kalau bukan nilai default (50ms).
+ *  - Base64 URL_SAFE + NO_PADDING + NO_WRAP: tanpa karakter '+' '/' '='
+ *    yang suka bikin ribet kalau disalin manual/lewat chat.
  */
 object MappingCodeUtil {
 
-    private const val PREFIX = "M1-" // penanda versi format kode, tetap singkat
+    private const val PREFIX = "M1-"
+    private const val DEFAULT_MACRO_MS = 50L
 
     fun encode(
         buttons: List<ButtonMapping>,
@@ -30,19 +32,19 @@ object MappingCodeUtil {
     ): String {
         val root = JSONArray()
         root.put(if (touchpadEnabled) 1 else 0)
-        root.put(r3(touchpadX)); root.put(r3(touchpadY))
-        root.put(r3(touchpadWidth)); root.put(r3(touchpadHeight))
-        root.put(r3(mouseSensitivity))
+        root.put(r2(touchpadX)); root.put(r2(touchpadY))
+        root.put(r2(touchpadWidth)); root.put(r2(touchpadHeight))
+        root.put(r2(mouseSensitivity))
 
         val btnArr = JSONArray()
         buttons.forEach { b ->
             val one = JSONArray()
             one.put(b.keyName)
-            one.put(b.label)
-            one.put(r3(b.x)); one.put(r3(b.y)); one.put(r3(b.size))
-            one.put(r3(b.targetX)); one.put(r3(b.targetY))
+            one.put(if (b.label == b.keyName) "" else b.label) // "" = pakai keyName sebagai label
+            one.put(r2(b.x)); one.put(r2(b.y)); one.put(r2(b.size))
+            one.put(r2(b.targetX)); one.put(r2(b.targetY))
             one.put(b.actionType.ordinal)
-            one.put(b.macroIntervalMs)
+            if (b.macroIntervalMs != DEFAULT_MACRO_MS) one.put(b.macroIntervalMs) // hanya kalau custom
             btnArr.put(one)
         }
         root.put(btnArr)
@@ -72,17 +74,19 @@ object MappingCodeUtil {
             val btnArr = root.getJSONArray(6)
             for (i in 0 until btnArr.length()) {
                 val one = btnArr.getJSONArray(i)
+                val keyName = one.getString(0)
+                val labelRaw = one.optString(1, "")
                 buttons.add(
                     ButtonMapping(
-                        keyName = one.getString(0),
-                        label = one.getString(1),
+                        keyName = keyName,
+                        label = labelRaw.ifEmpty { keyName },
                         x = one.getDouble(2).toFloat(),
                         y = one.getDouble(3).toFloat(),
                         size = one.getDouble(4).toFloat(),
                         targetX = one.getDouble(5).toFloat(),
                         targetY = one.getDouble(6).toFloat(),
                         actionType = actions.getOrElse(one.getInt(7)) { ActionType.TAP },
-                        macroIntervalMs = one.optLong(8, 80L)
+                        macroIntervalMs = one.optLong(8, DEFAULT_MACRO_MS)
                     )
                 )
             }
@@ -96,10 +100,10 @@ object MappingCodeUtil {
                 mouseSensitivity = root.getDouble(5).toFloat()
             )
         } catch (e: Exception) {
-            null // kode rusak/tidak valid
+            null
         }
     }
 
-    /** Bulatkan ke 3 angka desimal supaya representasi Double-nya "bersih" (pendek). */
-    private fun r3(value: Float): Double = Math.round(value * 1000.0) / 1000.0
+    /** Bulatkan ke 2 angka desimal supaya representasi Double-nya pendek & bersih. */
+    private fun r2(value: Float): Double = Math.round(value * 100.0) / 100.0
 }

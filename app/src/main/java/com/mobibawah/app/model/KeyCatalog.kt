@@ -13,11 +13,14 @@ object KeyCatalog {
     val ARAH = listOf("UP", "DOWN", "LEFT", "RIGHT")
     val FUNGSI = listOf(
         "SPACE", "SHIFT", "CTRL", "ALT", "TAB", "ENTER", "ESC",
-        "F1", "F2", "F3", "F4", "F5",
+        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+        "CAPSLOCK", "BACKSPACE", "DELETE", "PAGEUP", "PAGEDOWN", "HOME", "END",
         "MOUSE_LEFT", "MOUSE_RIGHT", "SCROLL_UP", "SCROLL_DOWN"
     )
+    val SIMBOL = listOf(",", ".", "/", "\\", ";", "'", "`", "-", "=", "[", "]")
+    val NUMPAD = (0..9).map { "NUM$it" }
 
-    val SEMUA: List<String> = HURUF + ANGKA + ARAH + FUNGSI
+    val SEMUA: List<String> = HURUF + ANGKA + ARAH + FUNGSI + SIMBOL + NUMPAD
 
     /** Preset cepat untuk game FPS/TPS umum: WASD + spasi (lompat) + shift (lari) */
     fun presetWASD(): List<ButtonMapping> = listOf(

@@ -41,7 +41,84 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
-## Update terbaru (v1 — MobiladorWv1)
+## Update terbaru (v3)
+
+- **Dashboard Deteksi Perangkat** (menu baru di halaman utama): menampilkan
+  daftar keyboard & mouse fisik yang sedang terhubung (Bluetooth maupun
+  USB/OTG), **update otomatis** saat kamu colok/lepas perangkat (pakai
+  `InputManager.InputDeviceListener`) — tidak perlu keluar-masuk halaman.
+- **Tes Langsung di Dashboard**: ada kotak "tekan tombol keyboard fisik"
+  yang langsung menampilkan nama tombol yang terdeteksi, dan kotak serupa
+  untuk gerakan/klik mouse fisik. Ini pakai jalur standar Android
+  (`onKeyDown`/`onGenericMotionEvent`), independen dari sistem mapping —
+  jadi kalau tombolmu muncul di sini, itu bukti Android sendiri sudah
+  mengenali perangkatmu dengan benar.
+- **Deteksi Otomatis saat memilih key mapping**: di dialog pilih tombol
+  (baik dari "+ Tambah Tombol" maupun saat mengedit tombol), sekarang ada
+  opsi paling atas **"🎯 Deteksi Otomatis"** — tekan itu, lalu tekan
+  langsung tombol fisik yang mau dipetakan (misal S), dan otomatis
+  terisi "S" tanpa perlu mencari manual di daftar. Ini sekaligus jadi
+  bukti langsung tombol tersebut benar-benar terbaca sebelum dipakai main.
+
+### Soal "harus work tanpa bug saat masuk game"
+
+Saya sudah pastikan alurnya konsisten dari sisi kode (tombol layar,
+keyboard fisik, dan touchpad semua lewat satu jalur `MobiAccessibilityService`
+yang sama, jadi tidak ada jalur ganda yang bisa saling bentrok). Tapi
+saya jujur: saya tidak punya perangkat fisik untuk mencoba langsung di
+game sungguhan, jadi saya tidak bisa menjamin 100% mulus di semua HP dan
+semua game — perilaku Accessibility Service kadang sedikit berbeda antar
+merk HP (MIUI, ColorOS, dll sering punya pembatasan baterai/izin
+tambahan). Dashboard di atas adalah alat paling praktis untuk mengecek
+di HP-mu sendiri: kalau tes di Dashboard sudah menunjukkan tombol/mouse
+terbaca benar, mapping di dalam game memakai jalur pembacaan yang persis
+sama. Kalau nanti masih ada yang meleset saat dicoba di game, tolong
+kabari saya detail gejalanya (tombol mana, aksi apa, game apa) supaya
+saya bisa perbaiki tepat sasaran.
+
+## Update sebelumnya
+
+- **Dukungan keyboard fisik diperluas**: sekarang mengenali F6-F12, tanda
+  baca umum (, . / \ ; ' ` - = [ ]), Caps Lock, Backspace, Delete, Page
+  Up/Down, Home/End, dan angka Numpad — selain huruf/angka/panah/fungsi
+  dasar yang sudah ada. Karena keyboard Bluetooth/USB itu semuanya
+  memakai kode standar yang sama di Android, ini otomatis mencakup
+  hampir semua keyboard eksternal yang beredar.
+- **Tombol ▲/▼ dipindah ke tengah-atas panel** (persis di atas "Pilih
+  Gambar HUD" seperti diminta): sekarang jadi satu kesatuan dengan panel,
+  jadi saat panel ditutup tombolnya otomatis turun ke bawah layar (bebas
+  taruh tombol dimana saja), tap lagi untuk menaikkan panelnya kembali.
+- **Kode mapping dipendekkan lagi**: dibulatkan ke 2 desimal, label
+  tombol tidak disimpan dobel kalau sama dengan nama key, dan
+  `macroIntervalMs` cuma disimpan kalau bukan default — kode jadi lebih
+  ringkas lagi dari update sebelumnya. Tombol **Salin** tetap ada.
+- **Fitur Profil (halaman sendiri)**: tombol "Profil" di menu utama →
+  lihat/ganti avatar (dari galeri), ganti password, atau hapus akun lokal
+  (mapping game tidak ikut terhapus).
+- **Tutorial "?" dilengkapi**: sekarang menjelaskan semua fitur secara
+  runtut — dasar, tipe aksi, keyboard/mouse fisik, touchpad, gambar HUD,
+  kode mapping, dan panel.
+
+### Dua hal yang JUJUR belum/tidak bisa dikerjakan
+
+1. **Kursor mouse OTG "menyesuaikan game" (otomatis sembunyi saat main,
+   muncul saat di menu)** — ini murni ditentukan oleh game itu sendiri
+   (lewat `requestPointerCapture()` di kode game tersebut) atau oleh
+   sistem Android, BUKAN sesuatu yang bisa dikontrol dari aplikasi
+   overlay pihak ketiga seperti Mobilador tanpa akses root. Saya tidak
+   membuat kode pura-pura untuk ini karena memang tidak akan berfungsi.
+2. **Fitur teman online 24 jam + chat terenkripsi** — ini butuh SERVER
+   sungguhan (database, sistem pesan real-time, dsb). Aplikasi ini tidak
+   punya dan tidak bisa punya server dari sandbox pengembangan ini. Kalau
+   saya membuat tombol "Chat" tanpa backend, itu cuma tampilan kosong yang
+   menyesatkan — jadi saya pilih untuk jujur dan tidak membuatnya. Kalau
+   kamu serius ingin fitur ini, jalur realistisnya adalah mengintegrasikan
+   layanan pihak ketiga seperti Firebase (Realtime Database/Firestore +
+   Authentication) — itu proyek terpisah yang cukup besar (perlu akun
+   Firebase sendiri), tapi saya bisa bantu memandu langkah-langkahnya
+   kalau kamu mau melanjutkan ke arah itu.
+
+## Update sebelumnya
 
 - **Nama aplikasi diganti** jadi **MobiladorWv1** di semua teks yang
   terlihat pengguna (nama app, notifikasi, pesan, SK). ID paket internal

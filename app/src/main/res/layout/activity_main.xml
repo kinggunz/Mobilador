@@ -31,6 +31,22 @@
             android:textStyle="bold" />
 
         <Button
+            android:id="@+id/btnDashboard"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:text="Dashboard" />
+
+        <Button
+            android:id="@+id/btnProfil"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:text="Profil" />
+
+        <Button
             android:id="@+id/btnPesan"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
