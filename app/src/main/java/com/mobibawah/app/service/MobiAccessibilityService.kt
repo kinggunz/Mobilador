@@ -8,6 +8,8 @@ import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
+import com.mobibawah.app.data.ActiveSessionPrefs
+import com.mobibawah.app.data.ProfileRepository
 import com.mobibawah.app.model.ActionType
 import com.mobibawah.app.model.ButtonMapping
 
@@ -19,12 +21,15 @@ import com.mobibawah.app.model.ButtonMapping
  * di game lain, lewat onKeyEvent() dengan canRequestFilterKeyEvents=true
  * (lihat accessibility_service_config.xml).
  *
- * Saat overlay berjalan (OverlayService), daftar tombol mapping yang aktif
- * didaftarkan lewat setActiveMapping(...). Setiap tombol fisik yang
- * ditekan dicocokkan ke daftar itu (lihat KeyCodeMapper) dan menjalankan
- * aksi yang SAMA PERSIS seperti kalau tombol itu disentuh di layar
- * (TAP/HOLD/TOGGLE/MACRO) — jadi mapping tetap konsisten dipakai lewat
- * jari ATAU keyboard fisik.
+ * PENTING — perbaikan bug "keyboard fisik tidak berfungsi": mapping yang
+ * aktif TIDAK lagi hanya dikirim sekali secara langsung dari OverlayService.
+ * Sekarang service ini SELF-HEALING: setiap kali dia (re)connect
+ * (onServiceConnected) atau mendeteksi layar game yang jadi target sedang
+ * di depan (onAccessibilityEvent -> TYPE_WINDOW_STATE_CHANGED), dia
+ * membaca sendiri package target dari ActiveSessionPrefs dan memuat ulang
+ * mapping-nya langsung dari penyimpanan. Jadi walau service ini sempat
+ * mati/di-restart Android di tengah jalan (kejadian umum di sebagian HP),
+ * dia otomatis pulih sendiri tanpa perlu tindakan apa pun dari pengguna.
  */
 class MobiAccessibilityService : AccessibilityService() {
 
@@ -40,6 +45,7 @@ class MobiAccessibilityService : AccessibilityService() {
 
     // ---------- Keyboard fisik ----------
     private var activeButtons: List<ButtonMapping> = emptyList()
+    private var loadedForPackage: String? = null
     private val physicalToggleState = HashMap<String, Boolean>()
     private val macroHandler = Handler(Looper.getMainLooper())
     private val macroRunnables = HashMap<String, Runnable>()
@@ -48,6 +54,7 @@ class MobiAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         instance = this
         Log.i(TAG, "Mobibawah Accessibility Service aktif")
+        reloadFromPersistedTarget() // pulihkan mapping kalau sebelumnya sempat aktif
     }
 
     override fun onDestroy() {
@@ -56,18 +63,42 @@ class MobiAccessibilityService : AccessibilityService() {
         clearActiveMapping()
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {}
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val target = ActiveSessionPrefs.getTargetPackage(this) ?: return
+            val foreground = event.packageName?.toString() ?: return
+            if (foreground == target && loadedForPackage != target) {
+                loadMappingFor(target)
+            }
+        }
+    }
+
     override fun onInterrupt() {}
 
-    /** Dipanggil OverlayService saat mulai/berhenti, supaya key fisik tahu mapping mana yang aktif. */
+    /** Dipanggil OverlayService segera setelah mulai, untuk efek instan (tanpa menunggu event window). */
     fun setActiveMapping(buttons: List<ButtonMapping>) {
         activeButtons = buttons
+        loadedForPackage = ActiveSessionPrefs.getTargetPackage(this)
     }
 
     fun clearActiveMapping() {
         activeButtons = emptyList()
+        loadedForPackage = null
         physicalToggleState.clear()
         macroRunnables.keys.toList().forEach { stopMacroLoop(it) }
+    }
+
+    /** Baca ulang target dari penyimpanan & muat mapping-nya — dipanggil saat service baru (re)connect. */
+    private fun reloadFromPersistedTarget() {
+        val target = ActiveSessionPrefs.getTargetPackage(this) ?: return
+        loadMappingFor(target)
+    }
+
+    private fun loadMappingFor(packageName: String) {
+        val profile = ProfileRepository(this).load(packageName, packageName)
+        activeButtons = profile.buttons
+        loadedForPackage = packageName
+        Log.i(TAG, "Mapping dimuat untuk $packageName: ${activeButtons.size} tombol")
     }
 
     // ---------- Keyboard fisik: inti perbaikan mapping ----------

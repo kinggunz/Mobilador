@@ -7,6 +7,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
@@ -79,6 +80,20 @@ class MappingEditorActivity : AppCompatActivity() {
         profile = repository.load(pkg, label)
 
         previewArea = findViewById(R.id.previewArea)
+
+        // Klik KANAN mouse fisik di area kosong = langsung tawarkan tambah
+        // tombol persis di titik itu (mirip alur cepat di app keymapper
+        // sejenis) — klik kiri/sentuh jari tetap tidak berubah sama sekali.
+        previewArea.setOnTouchListener { _, event ->
+            val isRightClick = event.actionMasked == MotionEvent.ACTION_DOWN &&
+                (event.buttonState and MotionEvent.BUTTON_SECONDARY) != 0
+            if (isRightClick) {
+                showQuickAddAt(event.x, event.y)
+                true
+            } else {
+                false
+            }
+        }
         imgHud = findViewById(R.id.imgHud)
         val seekUkuran = findViewById<SeekBar>(R.id.seekUkuran)
         val btnTambah = findViewById<Button>(R.id.btnTambahTombol)
@@ -152,12 +167,31 @@ class MappingEditorActivity : AppCompatActivity() {
         }
     }
 
+    // ---------- Klik kanan mouse: tambah tombol cepat di titik itu ----------
+
+    private fun showQuickAddAt(pxX: Float, pxY: Float) {
+        val previewW = previewArea.width.takeIf { it > 0 } ?: resources.displayMetrics.widthPixels
+        val previewH = previewArea.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
+        val fracX = (pxX / previewW).coerceIn(0f, 1f)
+        val fracY = (pxY / previewH).coerceIn(0f, 1f)
+
+        KeyPickerDialog.show(this) { keyName ->
+            val newMapping = ButtonMapping(
+                label = keyName, keyName = keyName,
+                x = fracX, y = fracY, targetX = fracX, targetY = fracY
+            )
+            profile.buttons.add(newMapping)
+            addButtonView(newMapping)
+        }
+    }
+
     // ---------- Tutorial ----------
 
     private fun showTutorialDialog() {
         val pesan = """
             DASAR
             • + TAMBAH TOMBOL: pilih key manual dari daftar, ATAU pilih "🎯 Deteksi Otomatis" lalu tekan langsung tombol fisiknya — otomatis terisi & jadi bukti keyboardmu terbaca.
+            • KLIK KANAN MOUSE di area kosong: langsung tawarkan tambah tombol tepat di titik itu (cara cepat kalau kamu pakai mouse fisik untuk mengatur mapping).
             • PRESET WASD: langsung buat 4 tombol arah + Space + Shift, tinggal digeser ulang posisinya.
             • Tap tombol yang sudah ada = ganti nama key, ganti tipe aksi, atau hapus.
 
@@ -183,6 +217,7 @@ class MappingEditorActivity : AppCompatActivity() {
             LAIN-LAIN
             • Tombol ▲/▼ di atas panel: sembunyikan/tampilkan bilah menu ini, biar seluruh layar bebas dipakai naruh tombol.
             • Menu utama > Dashboard: cek keyboard/mouse apa saja yang sedang terhubung ke HP, plus tes langsung tekan tombol/gerak mouse untuk buktikan semuanya terbaca dengan benar.
+            • Kalau keyboard fisik pernah berhenti berfungsi tiba-tiba: buka Pengaturan HP > Baterai > cari MobiladorWv1 > pilih "Tanpa batasan/Unrestricted" (bukan "Dioptimalkan"). Beberapa HP (Xiaomi/Oppo/Vivo dll) suka mematikan paksa Layanan Aksesibilitas demi hemat baterai.
             • Jangan lupa tekan SIMPAN setelah selesai mengatur.
         """.trimIndent()
 

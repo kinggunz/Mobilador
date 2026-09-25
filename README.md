@@ -41,7 +41,56 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
-## Update terbaru (v3)
+## Update terbaru (v5) — perbaikan fitur kursor mouse-geser
+
+- **Fitur kursor mouse diperbaiki total** (sesuai yang diminta: "tekan
+  tengah mouse, kursor hilang, game bisa digeser"). Ada bug desain di
+  versi sebelumnya: ikon kursor dan area drag jadi SATU window yang
+  sama, jadi begitu area itu dibuat "tembus" (nonaktif), ikon kursornya
+  ikut tidak bisa disentuh lagi untuk dinyalakan ulang — bisa bikin
+  fiturnya kelihatan "macet". Sekarang dipisah jadi DUA window:
+  - Ikon kursor (➤) SELALU bisa disentuh, di window sendiri.
+  - Area drag di baliknya, mulai NONAKTIF (tembus ke kontrol asli game)
+    supaya tidak mengganggu tombol tembak dsb di FreeFire.
+  Tap ikon kursor: **kursor hilang** (disembunyikan) dan area itu
+  langsung aktif jadi bisa digeser bebas buat mouse-look/geser peta. Tap
+  lagi: kursor muncul lagi, area kembali tembus normal ke game. Bisa
+  gonta-ganti kapan saja tanpa pernah "terkunci".
+
+## Update sebelumnya
+
+- **PERBAIKAN INTI: bug "keyboard W teman saya tidak berfungsi"** — akar
+  masalahnya adalah race condition: mapping tombol hanya "dikirim" ke
+  Accessibility Service SEKALI secara langsung saat overlay dinyalakan.
+  Kalau saat itu juga service-nya belum benar-benar siap (baru
+  konek/baru di-restart Android karena kehabisan memori atau dibatasi
+  OEM tertentu seperti MIUI/ColorOS), pengiriman itu hilang begitu saja
+  dan keyboard fisik jadi tidak terdaftar sama sekali — walau tombol di
+  layar tetap normal karena jalurnya beda.
+  **Perbaikannya**: sekarang package game yang sedang aktif disimpan ke
+  penyimpanan (`ActiveSessionPrefs`), bukan cuma variabel sementara.
+  `MobiAccessibilityService` jadi **self-healing** — setiap kali dia
+  (re)connect ATAU mendeteksi game target muncul ke depan layar, dia
+  membaca sendiri & memuat ulang mapping-nya langsung dari penyimpanan.
+  Jadi walau service sempat mati/restart di tengah sesi main, dia pulih
+  otomatis tanpa perlu pengguna melakukan apa pun.
+- **Panduan battery-restriction** ditambahkan ke tutorial "?": kalau
+  keyboard tiba-tiba berhenti bekerja, arahkan pengguna set baterai app
+  ke "Tanpa batasan" — ini penyebab umum lain di luar kendali kode,
+  banyak HP Android (terutama Xiaomi/Oppo/Vivo) suka mematikan paksa
+  Accessibility Service demi hemat baterai.
+- **Klik kanan mouse untuk tambah tombol cepat**: di layar mapping,
+  klik kanan (tombol sekunder) mouse fisik di area kosong langsung
+  menawarkan dialog pilih key untuk membuat tombol baru tepat di titik
+  itu. *Catatan jujur: saya tidak punya akses untuk memeriksa persis
+  antarmuka aplikasi "GG Mouse Pro" yang kamu sebut, jadi saya tidak bisa
+  menjamin tiruan 100% identik — yang saya buat adalah fitur dengan
+  tujuan yang sama (klik kanan = tambah cepat), dibangun dari nol
+  memakai deteksi tombol mouse standar Android.*
+- Fitur mouse arrow di tengah touchpad (nyala/mati mode geser) sudah ada
+  sejak update sebelumnya dan tetap dipertahankan seperti itu.
+
+## Update sebelumnya
 
 - **Dashboard Deteksi Perangkat** (menu baru di halaman utama): menampilkan
   daftar keyboard & mouse fisik yang sedang terhubung (Bluetooth maupun

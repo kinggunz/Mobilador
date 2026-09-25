@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import com.mobibawah.app.R
+import com.mobibawah.app.data.ActiveSessionPrefs
 import com.mobibawah.app.data.ProfileRepository
 import com.mobibawah.app.model.MappingProfile
 import com.mobibawah.app.service.MobiAccessibilityService
@@ -37,15 +38,6 @@ class OverlayService : Service() {
         // supaya tombol "Matikan MobiladorWv1" tahu harus aktif atau tidak.
         var isRunning: Boolean = false
             private set
-
-        // Daftar tombol mapping yang SEDANG AKTIF (game yang sedang dimainkan).
-        // Dibuat "static" dan dibaca LANGSUNG oleh MobiAccessibilityService
-        // setiap ada tombol fisik ditekan — bukan cuma di-"push" sekali di
-        // awal — supaya tidak ada race condition kalau Accessibility Service
-        // belum sempat konek persis saat overlay baru dinyalakan. Ini
-        // perbaikan supaya tombol keyboard fisik (mis. "A") selalu
-        // ke-mapping dengan benar.
-        var activeMappingButtons: List<com.mobibawah.app.model.ButtonMapping> = emptyList()
     }
 
     private lateinit var windowManager: WindowManager
@@ -62,20 +54,24 @@ class OverlayService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForeground(NOTIF_ID, buildNotification())
 
-        val pkg = intent?.getStringExtra(EXTRA_PACKAGE)
+        val pkg = intent?.getStringExtra(EXTRA_PACKAGE) ?: "unknown"
         val label = intent?.getStringExtra(EXTRA_LABEL) ?: "Game"
 
         // 1) Buka aplikasi/game target
-        pkg?.let { launchTargetApp(it) }
+        launchTargetApp(pkg)
 
         // 2) Muat mapping tersimpan untuk game ini
-        val profile = ProfileRepository(this).load(pkg ?: "unknown", label)
+        val profile = ProfileRepository(this).load(pkg, label)
 
-        // 2b) Daftarkan mapping ini secara statis supaya KEYBOARD FISIK
-        // (Bluetooth/kabel) juga bisa memicu aksi yang sama seperti tombol
-        // di layar. Dibaca langsung oleh MobiAccessibilityService (bukan
-        // di-push), jadi tetap benar walau service baru konek belakangan.
-        activeMappingButtons = profile.buttons
+        // 2b) PENTING (perbaikan bug keyboard fisik): simpan package target
+        // ke penyimpanan (bukan cuma variabel di memori) SUPAYA
+        // MobiAccessibilityService bisa membaca & memuat ulang mapping-nya
+        // SENDIRI kapan pun — baik langsung sekarang, maupun belakangan
+        // kalau service itu sempat mati/restart di tengah jalan. Panggilan
+        // langsung ke instance di bawah ini cuma untuk efek instan; yang
+        // menjamin tetap benar walau ada gangguan adalah baris di atasnya.
+        ActiveSessionPrefs.setTargetPackage(this, pkg)
+        MobiAccessibilityService.instance?.setActiveMapping(profile.buttons)
 
         // 3) Gambar semua tombol + touchpad + tombol mengambang kontrol
         drawButtons(profile)
@@ -119,40 +115,77 @@ class OverlayService : Service() {
         }
     }
 
+    /**
+     * Menggambar DUA window terpisah untuk fitur mouse-geser:
+     *  1) "pad" — area drag sebenarnya. Mulai NONAKTIF (FLAG_NOT_TOUCHABLE)
+     *     supaya di awal tidak mengganggu kontrol asli game (mis. tombol
+     *     tembak FreeFire yang mungkin ada di bawahnya).
+     *  2) "handle" — ikon kursor mouse kecil di tengah area itu, SELALU
+     *     bisa disentuh (window terpisah, tidak pernah NOT_TOUCHABLE).
+     *     Tap ikon ini: kursor HILANG (disembunyikan) dan window "pad"
+     *     diaktifkan sehingga area itu bisa digeser bebas (mode mouse-
+     *     look/geser peta ala FreeFire). Tap lagi: kursor muncul lagi,
+     *     "pad" kembali tembus ke game.
+     */
     private fun drawTouchpad(profile: MappingProfile) {
         val screenW = resources.displayMetrics.widthPixels
         val screenH = resources.displayMetrics.heightPixels
+        val padW = (profile.touchpadWidth * screenW).toInt()
+        val padH = (profile.touchpadHeight * screenH).toInt()
+        val padX = (profile.touchpadX * screenW).toInt()
+        val padY = (profile.touchpadY * screenH).toInt()
+
         val pad = TouchpadView(this).apply { sensitivity = profile.mouseSensitivity }
-        val params = WindowManager.LayoutParams(
-            (profile.touchpadWidth * screenW).toInt(),
-            (profile.touchpadHeight * screenH).toInt(),
+        val padParams = WindowManager.LayoutParams(
+            padW, padH,
             overlayType(),
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, // mulai OFF: tembus ke game dulu
             PixelFormat.TRANSLUCENT
         )
-        params.gravity = Gravity.TOP or Gravity.START
-        params.x = (profile.touchpadX * screenW).toInt()
-        params.y = (profile.touchpadY * screenH).toInt()
+        padParams.gravity = Gravity.TOP or Gravity.START
+        padParams.x = padX
+        padParams.y = padY
+        windowManager.addView(pad, padParams)
+        overlayViews.add(pad)
 
-        // Tap cepat (tanpa geser) di tengah touchpad = matikan/nyalakan mode
-        // mouse-geser. Saat DIMATIKAN, window ditambah FLAG_NOT_TOUCHABLE
-        // supaya sentuhan di area itu langsung "tembus" ke game di
-        // bawahnya (bukan cuma berhenti menggeser, tapi benar tidak
-        // menghalangi sama sekali) — persis seperti ikon panah nonaktif.
-        pad.onToggleEnabled = { enabled ->
-            params.flags = if (enabled) {
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        val handleSize = 64
+        val handle = TextView(this).apply {
+            text = "➤"
+            textSize = 20f
+            setTextColor(0xFFFFFFFF.toInt())
+            gravity = Gravity.CENTER
+            setBackgroundResource(R.drawable.shape_overlay_button)
+        }
+        val handleParams = WindowManager.LayoutParams(
+            handleSize, handleSize,
+            overlayType(),
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            PixelFormat.TRANSLUCENT
+        )
+        handleParams.gravity = Gravity.TOP or Gravity.START
+        handleParams.x = padX + padW / 2 - handleSize / 2
+        handleParams.y = padY + padH / 2 - handleSize / 2
+
+        var dragModeOn = false
+        handle.setOnClickListener {
+            dragModeOn = !dragModeOn
+            if (dragModeOn) {
+                // Kursor hilang, area drag diaktifkan -> game bisa digeser
+                handle.visibility = View.INVISIBLE
+                padParams.flags = padParams.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
             } else {
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                // Kursor muncul lagi, area drag kembali tembus ke game
+                handle.visibility = View.VISIBLE
+                padParams.flags = padParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                MobiAccessibilityService.instance?.endTouch(TouchpadView.TOUCH_ID) // jaga2 lepas stroke yang nyangkut
             }
-            runCatching { windowManager.updateViewLayout(pad, params) }
+            runCatching { windowManager.updateViewLayout(pad, padParams) }
         }
 
-        windowManager.addView(pad, params)
-        overlayViews.add(pad)
+        windowManager.addView(handle, handleParams)
+        overlayViews.add(handle)
     }
 
     /** Tombol bulat kecil yang selalu bisa digeser & dipakai untuk show/hide semua tombol. */
@@ -229,7 +262,7 @@ class OverlayService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
-        activeMappingButtons = emptyList()
+        ActiveSessionPrefs.clear(this)
         MobiAccessibilityService.instance?.clearActiveMapping()
         overlayViews.forEach { runCatching { windowManager.removeView(it) } }
         overlayViews.clear()
