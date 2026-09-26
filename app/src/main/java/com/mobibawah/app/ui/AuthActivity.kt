@@ -2,7 +2,7 @@ package com.mobibawah.app.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -28,10 +28,11 @@ class AuthActivity : AppCompatActivity() {
         val inputUsername = findViewById<EditText>(R.id.inputUsername)
         val inputPassword = findViewById<EditText>(R.id.inputPassword)
         val inputConfirm = findViewById<EditText>(R.id.inputPasswordConfirm)
-        val btnSubmit = findViewById<Button>(R.id.btnSubmitAuth)
+        val btnSubmit = findViewById<View>(R.id.btnSubmitAuth)
+        val txtSubmitLabel = findViewById<TextView>(R.id.txtSubmitAuthLabel)
 
         isLoginMode = AppPrefs.isRegistered(this)
-        applyMode(subtitle, inputConfirm, btnSubmit)
+        applyMode(subtitle, inputConfirm, txtSubmitLabel)
 
         btnSubmit.setOnClickListener {
             val username = inputUsername.text.toString().trim()
@@ -65,15 +66,15 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyMode(subtitle: TextView, inputConfirm: EditText, btnSubmit: Button) {
+    private fun applyMode(subtitle: TextView, inputConfirm: EditText, txtSubmitLabel: TextView) {
         if (isLoginMode) {
             subtitle.text = "Masuk ke akunmu"
-            inputConfirm.visibility = android.view.View.GONE
-            btnSubmit.text = "MASUK"
+            inputConfirm.visibility = View.GONE
+            txtSubmitLabel.text = "MASUK"
         } else {
             subtitle.text = "Buat akun untuk mulai memakai"
-            inputConfirm.visibility = android.view.View.VISIBLE
-            btnSubmit.text = "DAFTAR & LANJUTKAN"
+            inputConfirm.visibility = View.VISIBLE
+            txtSubmitLabel.text = "DAFTAR & LANJUTKAN"
         }
     }
 
@@ -88,3 +89,4 @@ class AuthActivity : AppCompatActivity() {
         finish()
     }
 }
+

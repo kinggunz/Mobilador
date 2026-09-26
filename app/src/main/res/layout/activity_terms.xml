@@ -51,17 +51,32 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnAgreeTerms"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_margin="16dp"
-        android:layout_marginTop="0dp"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/text_light"
-        android:textStyle="bold"
-        android:enabled="false"
-        android:text="SETUJU &amp; LANJUTKAN" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingBottom="4dp">
+        <TextView
+            android:id="@+id/btnAgreeTerms"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_icon_big"
+            android:backgroundTint="@color/primary"
+            android:gravity="center"
+            android:enabled="false"
+            android:alpha="0.4"
+            android:text="✅"
+            android:textSize="26sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="SETUJU &amp; LANJUTKAN"
+            android:textColor="@color/text_light"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"

@@ -135,7 +135,10 @@ class OverlayService : Service() {
         val padX = (profile.touchpadX * screenW).toInt()
         val padY = (profile.touchpadY * screenH).toInt()
 
-        val pad = TouchpadView(this).apply { sensitivity = profile.mouseSensitivity }
+        val pad = TouchpadView(this).apply {
+            sensitivityLeft = profile.mouseSensitivity
+            sensitivityRight = profile.mouseSensitivityRight
+        }
         val padParams = WindowManager.LayoutParams(
             padW, padH,
             overlayType(),
@@ -179,7 +182,9 @@ class OverlayService : Service() {
                 // Kursor muncul lagi, area drag kembali tembus ke game
                 handle.visibility = View.VISIBLE
                 padParams.flags = padParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                MobiAccessibilityService.instance?.endTouch(TouchpadView.TOUCH_ID) // jaga2 lepas stroke yang nyangkut
+                // Jaga-jaga lepas stroke yang mungkin masih nyangkut di salah satu channel
+                MobiAccessibilityService.instance?.endTouch(TouchpadView.TOUCH_ID_LEFT)
+                MobiAccessibilityService.instance?.endTouch(TouchpadView.TOUCH_ID_RIGHT)
             }
             runCatching { windowManager.updateViewLayout(pad, padParams) }
         }

@@ -51,7 +51,8 @@ data class MappingProfile(
     var touchpadY: Float = 0.55f,
     var touchpadWidth: Float = 0.35f,
     var touchpadHeight: Float = 0.30f,
-    var mouseSensitivity: Float = 1.2f,
+    var mouseSensitivity: Float = 1.2f,       // sensitivitas drag KLIK KIRI mouse / jari
+    var mouseSensitivityRight: Float = 1.2f,  // sensitivitas drag KLIK KANAN mouse (independen)
     // Path absolut file gambar HUD/screenshot game (disalin ke penyimpanan
     // internal aplikasi) yang dipakai sebagai acuan visual saat mengatur
     // posisi tombol di MappingEditorActivity. Hanya dipakai saat mengedit —

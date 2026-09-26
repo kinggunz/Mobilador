@@ -87,7 +87,8 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -96,58 +97,35 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp">
 
-                <Button
-                    android:id="@+id/btnTambahTombol"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:textSize="11sp"
-                    android:text="@string/tambah_tombol" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="10dp">
+                    <TextView android:id="@+id/btnTambahTombol" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="➕" android:textSize="16sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Tambah" android:textColor="#CCCCCC" android:textSize="9sp" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnPresetWasd"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:textSize="11sp"
-                    android:text="Preset WASD" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="10dp">
+                    <TextView android:id="@+id/btnPresetWasd" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="🎮" android:textSize="16sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Preset" android:textColor="#CCCCCC" android:textSize="9sp" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnPilihHud"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:textSize="11sp"
-                    android:text="Pilih Gambar HUD" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="10dp">
+                    <TextView android:id="@+id/btnPilihHud" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="🖼️" android:textSize="16sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="HUD" android:textColor="#CCCCCC" android:textSize="9sp" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnHapusHud"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:textSize="11sp"
-                    android:text="Hapus HUD" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="10dp">
+                    <TextView android:id="@+id/btnHapusHud" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="🗑️" android:textSize="16sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Hapus HUD" android:textColor="#CCCCCC" android:textSize="9sp" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnBagikanKode"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:textSize="11sp"
-                    android:text="Bagikan Kode" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="10dp">
+                    <TextView android:id="@+id/btnBagikanKode" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="📤" android:textSize="16sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Bagikan" android:textColor="#CCCCCC" android:textSize="9sp" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnImporKode"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="11sp"
-                    android:text="Impor Kode" />
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center">
+                    <TextView android:id="@+id/btnImporKode" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="📥" android:textSize="16sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Impor" android:textColor="#CCCCCC" android:textSize="9sp" />
+                </LinearLayout>
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -174,15 +152,31 @@
                 android:max="100" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnSimpanMapping"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="10dp"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/text_light"
-            android:textSize="13sp"
-            android:text="@string/simpan" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:paddingBottom="10dp">
+            <TextView
+                android:id="@+id/btnSimpanMapping"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/bg_icon_big"
+                android:backgroundTint="@color/primary"
+                android:gravity="center"
+                android:text="💾"
+                android:textSize="24sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/simpan"
+                android:textColor="@color/text_light"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

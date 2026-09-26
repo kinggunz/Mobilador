@@ -48,6 +48,7 @@ class ProfileRepository(context: Context) {
         obj.put("touchpadWidth", p.touchpadWidth)
         obj.put("touchpadHeight", p.touchpadHeight)
         obj.put("mouseSensitivity", p.mouseSensitivity)
+        obj.put("mouseSensitivityRight", p.mouseSensitivityRight)
         obj.put("hudImagePath", p.hudImagePath)
         val arr = JSONArray()
         p.buttons.forEach { b ->
@@ -98,6 +99,7 @@ class ProfileRepository(context: Context) {
             touchpadWidth = obj.optDouble("touchpadWidth", 0.35).toFloat(),
             touchpadHeight = obj.optDouble("touchpadHeight", 0.30).toFloat(),
             mouseSensitivity = obj.optDouble("mouseSensitivity", 1.2).toFloat(),
+            mouseSensitivityRight = obj.optDouble("mouseSensitivityRight", 1.2).toFloat(),
             hudImagePath = if (obj.isNull("hudImagePath")) null else obj.optString("hudImagePath", null)
         )
     }

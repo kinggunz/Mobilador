@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/bg">
 
-    <!-- Header: logo animasi + nama app + tombol matikan -->
+    <!-- Header: logo animasi + nama app -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,38 +29,35 @@
             android:textColor="@color/text_light"
             android:textSize="20sp"
             android:textStyle="bold" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/btnDashboard"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:text="Dashboard" />
+    <!-- Baris tombol bulat berikon: Dashboard, Profil, Pesan, Matikan -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingBottom="4dp">
 
-        <Button
-            android:id="@+id/btnProfil"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:text="Profil" />
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/btnDashboard" android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="📊" android:textSize="18sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Dashboard" android:textColor="#AAAAAA" android:textSize="10sp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnPesan"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:text="Pesan" />
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/btnProfil" android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="👤" android:textSize="18sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Profil" android:textColor="#AAAAAA" android:textSize="10sp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnMatikanMobi"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:text="Matikan MobiladorWv1" />
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/btnPesan" android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="✉️" android:textSize="18sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Pesan" android:textColor="#AAAAAA" android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/btnMatikanMobi" android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/shape_pull_tab" android:gravity="center" android:text="⏻" android:textColor="#E57373" android:textSize="20sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Matikan" android:textColor="#AAAAAA" android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Area tengah: tombol + besar untuk menambahkan/memilih game -->
@@ -129,29 +126,24 @@
             android:paddingEnd="12dp" />
     </HorizontalScrollView>
 
+    <!-- Baris tombol bulat berikon: izin Overlay & Aksesibilitas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp">
 
-        <Button
-            android:id="@+id/btnOverlayPermission"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="10sp"
-            android:text="@string/btn_izin_overlay" />
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/btnOverlayPermission" android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="🪟" android:textSize="18sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Izin Overlay" android:textColor="#AAAAAA" android:textSize="10sp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnAccessibility"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="10sp"
-            android:text="@string/btn_izin_aksesibilitas" />
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/btnAccessibility" android:layout_width="46dp" android:layout_height="46dp" android:background="@drawable/shape_overlay_button" android:gravity="center" android:text="♿" android:textSize="18sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Aksesibilitas" android:textColor="#AAAAAA" android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView

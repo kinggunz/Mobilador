@@ -41,7 +41,52 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
-## Update terbaru (v5) — perbaikan fitur kursor mouse-geser
+## Update terbaru (v7)
+
+- **Mouse kiri & kanan sekarang independen untuk drag/lihat sekitar**:
+  drag pakai **klik KIRI** mouse = channel/mode lihat sekitar sendiri,
+  drag pakai **klik KANAN** = channel terpisah dengan sensitivitas
+  sendiri juga (bisa diatur lewat tap ikon kursor touchpad → "Sensitivitas
+  Klik Kiri" & "Sensitivitas Klik Kanan"). Keduanya benar-benar 2 sentuhan
+  simulasi yang berbeda di baliknya, bukan cuma tampilan.
+- **Rotasi layar dikonfirmasi ulang**: semua halaman menu bebas
+  tegak/mendatar, KECUALI layar "Atur Mapping Tombol" yang tetap otomatis
+  terkunci landscape — sesuai yang diminta.
+- **Semua tombol teks diganti jadi tombol bulat berikon** (emoji sebagai
+  ikon, konsisten dengan gaya ▲/▼ dan "?" yang sudah ada sebelumnya):
+  Dashboard 📊, Profil 👤, Pesan ✉️, Matikan ⏻, Izin Overlay 🪟,
+  Aksesibilitas ♿, Tambah Tombol ➕, Preset 🎮, Gambar HUD 🖼️, Hapus HUD
+  🗑️, Bagikan Kode 📤, Impor Kode 📥, Simpan 💾, Atur Mapping ⚙️, Mulai
+  ▶️, Ganti Password 🔑, Hapus Akun 🗑️, Setuju & Lanjutkan ✅, dan
+  Daftar/Masuk ➜. Cuma tombol "+" besar di menu utama yang tetap
+  memakai widget Button asli (karena sudah bulat dari awal).
+
+## Update sebelumnya
+
+- **Perbaikan "WASD kadang kedip lepas sebentar"**: sentuhan HOLD yang
+  ditahan lama disambung ulang tiap 3 detik sekarang (sebelumnya tiap
+  120 milidetik). Makin jarang disambung = makin kecil peluang ada celah
+  yang kebaca game sebagai "jari lepas sebentar". Melepas tombol tetap
+  instan kapan saja, tidak menunggu 3 detik itu selesai dulu.
+- **Rotasi layar fleksibel**: semua halaman menu (Menu Utama, Profil,
+  Dashboard, Pesan, dll) sekarang bebas dipakai tegak maupun mendatar,
+  ikut posisi HP. **Khusus layar "Atur Mapping Tombol" tetap dikunci
+  landscape** — begitu kamu buka layar itu dari HP yang lagi tegak,
+  Android otomatis memutar ke landscape sendiri. Ini disengaja: satu-
+  satunya cara menjamin posisi tombol yang kamu atur presisi sama saat
+  dipakai di game (yang juga selalu landscape).
+- **Klik kiri/kanan mouse fisik untuk aksi in-game**: sudah saya
+  jelaskan di percakapan kenapa ini secara teknis tidak bisa "mencegat"
+  klik di sembarang titik layar game tanpa root (klik mouse langsung
+  ditangkap game, bukan app kita). Solusi yang SUDAH BISA dipakai
+  sekarang tanpa kode tambahan: taruh tombol HOLD tepat di atas tombol
+  tembak asli game, lalu klik-tahan mouse di situ — otomatis jadi
+  "tembak tanpa lepas" karena posisinya pas kena tombol overlay kita.
+  Opsi label "MOUSE_LEFT/MOUSE_RIGHT/SCROLL_UP/SCROLL_DOWN" yang dulu ada
+  di daftar key sudah saya hapus karena tidak pernah benar-benar
+  terhubung ke deteksi klik mouse sungguhan — menyesatkan kalau dibiarkan.
+
+## Update sebelumnya
 
 - **Fitur kursor mouse diperbaiki total** (sesuai yang diminta: "tekan
   tengah mouse, kursor hilang, game bisa digeser"). Ada bug desain di

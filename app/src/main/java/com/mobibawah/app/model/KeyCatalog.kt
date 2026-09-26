@@ -14,8 +14,16 @@ object KeyCatalog {
     val FUNGSI = listOf(
         "SPACE", "SHIFT", "CTRL", "ALT", "TAB", "ENTER", "ESC",
         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
-        "CAPSLOCK", "BACKSPACE", "DELETE", "PAGEUP", "PAGEDOWN", "HOME", "END",
-        "MOUSE_LEFT", "MOUSE_RIGHT", "SCROLL_UP", "SCROLL_DOWN"
+        "CAPSLOCK", "BACKSPACE", "DELETE", "PAGEUP", "PAGEDOWN", "HOME", "END"
+        // Catatan: MOUSE_LEFT/MOUSE_RIGHT/SCROLL_UP/SCROLL_DOWN sengaja
+        // TIDAK dimasukkan lagi. Klik mouse fisik itu berupa MotionEvent,
+        // bukan KeyEvent seperti tombol keyboard, dan langsung ditangkap
+        // oleh app yang ada di bawah kursor (game-nya) sebelum sempat
+        // dibaca Accessibility Service kita -- jadi kalau tetap dimasukkan
+        // ke daftar, pilihannya cuma teks kosong yang menyesatkan (tombol
+        // di layar tetap jalan, tapi klik mouse fisik tidak akan pernah
+        // memicunya). Klik KIRI mouse fisik untuk menekan tombol overlay
+        // di layar sudah otomatis berfungsi lewat jalur sentuhan biasa.
     )
     val SIMBOL = listOf(",", ".", "/", "\\", ";", "'", "`", "-", "=", "[", "]")
     val NUMPAD = (0..9).map { "NUM$it" }

@@ -76,24 +76,49 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnGantiPassword"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
-            android:text="Ganti Password" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="12dp">
 
-        <Button
-            android:id="@+id/btnHapusAkun"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
-            android:textColor="#E57373"
-            android:text="Hapus Akun &amp; Keluar" />
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="28dp">
+                <TextView
+                    android:id="@+id/btnGantiPassword"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/shape_overlay_button"
+                    android:gravity="center"
+                    android:text="🔑"
+                    android:textSize="22sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Ganti Password"
+                    android:textColor="@color/text_light"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center">
+                <TextView
+                    android:id="@+id/btnHapusAkun"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/shape_pull_tab"
+                    android:gravity="center"
+                    android:text="🗑️"
+                    android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Hapus Akun"
+                    android:textColor="#E57373"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

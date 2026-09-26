@@ -21,21 +21,26 @@
         android:supportsRtl="true">
 
         <!--
-          SEMUA activity di bawah ini dikunci screenOrientation="landscape".
-          Ini WAJIB dan disengaja: posisi & ukuran tombol mapping disimpan
-          sebagai persentase lebar/tinggi layar. Kalau ada satu saja layar
-          yang boleh portrait, sumbu lebar/tinggi yang dipakai untuk
-          menghitung persentase akan tertukar dibanding saat overlay
-          sungguhan berjalan (selalu landscape mengikuti game) — akibatnya
-          tombol bisa meleset/bug. Mengunci semuanya landscape memastikan
-          apa yang diatur di editor SAMA PERSIS saat dipakai di game.
+          Halaman menu (daftar akun, menu utama, profil, dashboard, dsb)
+          sengaja TIDAK dikunci orientasinya lagi ("unspecified") — bebas
+          dipakai tegak (portrait) maupun mendatar (landscape), mengikuti
+          posisi HP/pengaturan rotasi otomatis, karena layar-layar ini
+          tidak menyimpan koordinat apa pun jadi aman di orientasi manapun.
+
+          HANYA MappingEditorActivity yang TETAP dikunci landscape — WAJIB,
+          karena posisi & ukuran tombol mapping disimpan sebagai persentase
+          lebar/tinggi layar, dan saat overlay sungguhan berjalan di game
+          selalu landscape. Kalau HP sedang tegak lalu kamu buka layar
+          mapping, Android otomatis memutar ke landscape sendiri (berkat
+          kunci ini) — persis seperti yang diminta: "kalau mode layar
+          tegak, pas mau mapping otomatis landscape".
         -->
 
         <activity
             android:name=".ui.LauncherActivity"
             android:exported="true"
             android:theme="@style/Theme.Mobibawah"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,34 +51,35 @@
         <activity
             android:name=".ui.AuthActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <activity
             android:name=".ui.TermsActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <activity
             android:name=".ui.MainActivity"
             android:exported="false"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <activity
             android:name=".ui.AppPickerActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <activity
             android:name=".ui.AppDetailActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
+        <!-- WAJIB tetap landscape, lihat penjelasan panjang di atas. -->
         <activity
             android:name=".ui.MappingEditorActivity"
             android:exported="false"
@@ -84,19 +90,19 @@
         <activity
             android:name=".ui.PesanActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <activity
             android:name=".ui.ProfileActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <activity
             android:name=".ui.DashboardActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout" />
 
         <service

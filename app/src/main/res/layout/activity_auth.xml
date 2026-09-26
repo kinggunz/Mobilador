@@ -76,14 +76,33 @@
             android:background="@drawable/bg_input_field"
             android:layout_marginBottom="18dp" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/btnSubmitAuth"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/text_light"
-            android:textStyle="bold"
-            android:text="DAFTAR &amp; LANJUTKAN" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_icon_big"
+                android:backgroundTint="@color/primary"
+                android:gravity="center"
+                android:text="➜"
+                android:textColor="@color/text_light"
+                android:textSize="28sp" />
+            <TextView
+                android:id="@+id/txtSubmitAuthLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="DAFTAR &amp; LANJUTKAN"
+                android:textColor="@color/text_light"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/txtAuthSwitchMode"

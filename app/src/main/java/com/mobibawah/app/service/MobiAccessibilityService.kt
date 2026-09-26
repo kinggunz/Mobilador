@@ -36,7 +36,7 @@ class MobiAccessibilityService : AccessibilityService() {
     companion object {
         private const val TAG = "MobiAccessibility"
         var instance: MobiAccessibilityService? = null
-        private const val SEGMENT_MS = 120L
+        private const val SEGMENT_MS = 3000L // panjang tiap segmen stroke saat HOLD ditahan (lihat catatan di bawah)
     }
 
     // ---------- Sentuhan (dipakai tombol layar & keyboard fisik) ----------
@@ -166,6 +166,21 @@ class MobiAccessibilityService : AccessibilityService() {
         dispatchGesture(GestureDescription.Builder().addStroke(stroke).build(), null, null)
     }
 
+    /**
+     * Mulai sentuhan yang ditahan di (x,y), diberi id unik (mis. id tombol atau "touchpad").
+     *
+     * PERBAIKAN bug "WASD kadang kayak kedip lepas sebentar": sentuhan yang
+     * ditahan lama disambung ulang tiap SEGMENT_MS lewat continueStroke().
+     * Kalau segmennya terlalu pendek (dulu 120ms), setiap kali harus
+     * disambung ada celah super kecil yang KADANG bisa telat sepersekian
+     * detik (HP lagi sibuk, dsb) — celah itu bisa kebaca game sebagai jari
+     * "lepas sebentar" lalu "tempel lagi", jadi gerakan sedikit tersendat.
+     * Dengan segmen jauh lebih panjang (3 detik), penyambungan jarang
+     * terjadi sehingga peluang tersendat jauh lebih kecil. Melepas tombol
+     * (endTouch) TETAP instan kapan saja, tidak perlu menunggu 3 detik itu
+     * selesai dulu — karena endTouch mengirim gesture baru untuk mengakhiri
+     * sentuhan saat itu juga, bukan menunggu durasi segmen berjalan penuh.
+     */
     fun startTouch(id: String, x: Float, y: Float) {
         latestPoint[id] = x to y
         val path = Path().apply { moveTo(x, y) }

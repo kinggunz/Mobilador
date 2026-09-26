@@ -10,7 +10,6 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -96,13 +95,13 @@ class MappingEditorActivity : AppCompatActivity() {
         }
         imgHud = findViewById(R.id.imgHud)
         val seekUkuran = findViewById<SeekBar>(R.id.seekUkuran)
-        val btnTambah = findViewById<Button>(R.id.btnTambahTombol)
-        val btnPreset = findViewById<Button>(R.id.btnPresetWasd)
-        val btnSimpan = findViewById<Button>(R.id.btnSimpanMapping)
-        val btnPilihHud = findViewById<Button>(R.id.btnPilihHud)
-        val btnHapusHud = findViewById<Button>(R.id.btnHapusHud)
-        val btnBagikanKode = findViewById<Button>(R.id.btnBagikanKode)
-        val btnImporKode = findViewById<Button>(R.id.btnImporKode)
+        val btnTambah = findViewById<TextView>(R.id.btnTambahTombol)
+        val btnPreset = findViewById<TextView>(R.id.btnPresetWasd)
+        val btnSimpan = findViewById<TextView>(R.id.btnSimpanMapping)
+        val btnPilihHud = findViewById<TextView>(R.id.btnPilihHud)
+        val btnHapusHud = findViewById<TextView>(R.id.btnHapusHud)
+        val btnBagikanKode = findViewById<TextView>(R.id.btnBagikanKode)
+        val btnImporKode = findViewById<TextView>(R.id.btnImporKode)
         val panelBawah = findViewById<LinearLayout>(R.id.panelBawah)
         val btnToggleMenu = findViewById<TextView>(R.id.btnToggleMenu)
         val btnTutorial = findViewById<TextView>(R.id.btnTutorial)
@@ -298,12 +297,19 @@ class MappingEditorActivity : AppCompatActivity() {
         }
         container.addView(seekTinggi)
 
-        container.addView(TextView(this).apply { text = "Sensitivitas Gerak" })
+        container.addView(TextView(this).apply { text = "Sensitivitas Klik Kiri Mouse / Jari" })
         val seekSensitif = SeekBar(this).apply {
             max = 100
             progress = (((profile.mouseSensitivity - 0.3f) / 2.7f) * 100f).toInt().coerceIn(0, 100)
         }
         container.addView(seekSensitif)
+
+        container.addView(TextView(this).apply { text = "\nSensitivitas Klik Kanan Mouse (independen)" })
+        val seekSensitifKanan = SeekBar(this).apply {
+            max = 100
+            progress = (((profile.mouseSensitivityRight - 0.3f) / 2.7f) * 100f).toInt().coerceIn(0, 100)
+        }
+        container.addView(seekSensitifKanan)
 
         seekLebar.setOnSeekBarChangeListener(simpleSeekListener { p ->
             profile.touchpadWidth = 0.15f + (p / 100f) * 0.5f
@@ -315,6 +321,9 @@ class MappingEditorActivity : AppCompatActivity() {
         })
         seekSensitif.setOnSeekBarChangeListener(simpleSeekListener { p ->
             profile.mouseSensitivity = 0.3f + (p / 100f) * 2.7f
+        })
+        seekSensitifKanan.setOnSeekBarChangeListener(simpleSeekListener { p ->
+            profile.mouseSensitivityRight = 0.3f + (p / 100f) * 2.7f
         })
         switchAktif.setOnCheckedChangeListener { _: CompoundButton, checked: Boolean ->
             profile.touchpadEnabled = checked

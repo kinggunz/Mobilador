@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -46,14 +45,14 @@ class AppDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.txtAppLabel).text = label
         findViewById<ImageButton>(R.id.btnBackDetail).setOnClickListener { finish() }
 
-        findViewById<Button>(R.id.btnAturMappingDetail).setOnClickListener {
+        findViewById<TextView>(R.id.btnAturMappingDetail).setOnClickListener {
             val i = Intent(this, MappingEditorActivity::class.java)
             i.putExtra(MappingEditorActivity.EXTRA_PACKAGE, pkg)
             i.putExtra(MappingEditorActivity.EXTRA_LABEL, label)
             startActivity(i)
         }
 
-        findViewById<Button>(R.id.btnMulaiDetail).setOnClickListener { handleMulai() }
+        findViewById<TextView>(R.id.btnMulaiDetail).setOnClickListener { handleMulai() }
     }
 
     override fun onResume() {

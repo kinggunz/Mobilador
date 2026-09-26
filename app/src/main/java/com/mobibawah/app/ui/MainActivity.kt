@@ -39,19 +39,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, AppPickerActivity::class.java))
         }
 
-        findViewById<Button>(R.id.btnOverlayPermission).setOnClickListener { requestOverlayPermission() }
-        findViewById<Button>(R.id.btnAccessibility).setOnClickListener { openAccessibilitySettings() }
-        findViewById<Button>(R.id.btnPesan).setOnClickListener {
+        findViewById<TextView>(R.id.btnOverlayPermission).setOnClickListener { requestOverlayPermission() }
+        findViewById<TextView>(R.id.btnAccessibility).setOnClickListener { openAccessibilitySettings() }
+        findViewById<TextView>(R.id.btnPesan).setOnClickListener {
             startActivity(Intent(this, PesanActivity::class.java))
         }
-        findViewById<Button>(R.id.btnProfil).setOnClickListener {
+        findViewById<TextView>(R.id.btnProfil).setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
-        findViewById<Button>(R.id.btnDashboard).setOnClickListener {
+        findViewById<TextView>(R.id.btnDashboard).setOnClickListener {
             startActivity(Intent(this, DashboardActivity::class.java))
         }
 
-        findViewById<Button>(R.id.btnMatikanMobi).setOnClickListener {
+        findViewById<TextView>(R.id.btnMatikanMobi).setOnClickListener {
             if (OverlayService.isRunning) {
                 stopService(Intent(this, OverlayService::class.java))
                 Toast.makeText(this, "MobiladorWv1 dimatikan", Toast.LENGTH_SHORT).show()
