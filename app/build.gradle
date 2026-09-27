@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace 'com.jagaanak.anak'
+    namespace 'com.jagaanak.ortu'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.jagaanak.anak"
+        applicationId "com.jagaanak.ortu"
         minSdk 24
         targetSdk 34
         versionCode 1

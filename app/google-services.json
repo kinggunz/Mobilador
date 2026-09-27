@@ -1,5 +1,5 @@
 {
-  "_comment": "GANTI file ini dengan google-services.json ASLI dari Firebase Console (App Android: com.jagaanak.anak). File placeholder ini hanya contoh struktur dan TIDAK akan berfungsi.",
+  "_comment": "GANTI file ini dengan google-services.json ASLI dari Firebase Console (App Android: com.jagaanak.ortu, di PROJECT FIREBASE YANG SAMA dengan app Anak). File placeholder ini hanya contoh struktur dan TIDAK akan berfungsi.",
   "project_info": {
     "project_number": "000000000000",
     "project_id": "jaga-anak-contoh",
@@ -8,8 +8,8 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
-        "android_client_info": { "package_name": "com.jagaanak.anak" }
+        "mobilesdk_app_id": "1:000000000000:android:1111111111111111111111",
+        "android_client_info": { "package_name": "com.jagaanak.ortu" }
       },
       "oauth_client": [],
       "api_key": [ { "current_key": "GANTI_DENGAN_API_KEY_ASLI" } ],

@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">Jaga Anak</string>
-    <string name="accessibility_service_description">Dipakai untuk mendeteksi dan memblokir aplikasi terpilih saat jam tidur.</string>
+    <string name="app_name">Jaga Anak (Ortu)</string>
 </resources>

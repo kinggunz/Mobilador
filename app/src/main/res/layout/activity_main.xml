@@ -5,31 +5,72 @@
     android:layout_height="match_parent"
     android:padding="24dp">
 
-    <TextView
-        android:id="@+id/tvCode"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="12dp">
+
+        <EditText
+            android:id="@+id/etCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Masukkan kode pairing dari HP anak"
+            android:inputType="number"/>
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hubungkan"/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Beritahu kode ini ke aplikasi Jaga Anak (Ortu) di HP orang tua."
-        android:layout_marginBottom="24dp"/>
+        android:text="Pilih 1 aplikasi yang mau diblokir saat jam tidur:"
+        android:layout_marginBottom="8dp"/>
+
+    <ListView
+        android:id="@+id/listApps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/tvSleep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Jam tidur: belum diatur"
+        android:layout_marginTop="12dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnSleepStart"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Jam Mulai"/>
+
+        <Button
+            android:id="@+id/btnSleepEnd"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Jam Selesai"/>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/btnAksesibilitas"
+        android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Aktifkan Layanan Aksesibilitas"
-        android:layout_marginBottom="24dp"/>
-
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Belum ada pengaturan dari orang tua."/>
+        android:layout_marginTop="16dp"
+        android:text="Simpan Pengaturan"/>
 
 </LinearLayout>
