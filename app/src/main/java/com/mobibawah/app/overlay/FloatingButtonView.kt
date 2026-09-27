@@ -39,6 +39,13 @@ class FloatingButtonView(
     private val macroHandler = Handler(Looper.getMainLooper())
     private var macroRunnable: Runnable? = null
 
+    // Dipakai untuk ActionType.TAP saat DITAHAN (bukan cuma tap sekali):
+    // PERBAIKAN supaya tombol yang ditumpuk di atas tombol LOMPAT game
+    // (mis. buat manjat tangga yang butuh lompat berkali-kali) tetap
+    // berfungsi terus selama ditahan, bukan cuma sekali sentuh lalu diam.
+    private val tapRepeatHandler = Handler(Looper.getMainLooper())
+    private var tapRepeatRunnable: Runnable? = null
+
     init {
         text = mapping.label
         gravity = Gravity.CENTER
@@ -101,8 +108,10 @@ class FloatingButtonView(
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     service.performTap(tx, ty)
                     alpha = 0.5f
-                } else if (event.action == MotionEvent.ACTION_UP) {
+                    startTapRepeat(service, tx, ty)
+                } else if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
                     alpha = 1f
+                    stopTapRepeat()
                 }
             }
             ActionType.HOLD -> {
@@ -154,8 +163,29 @@ class FloatingButtonView(
         macroRunnable = null
     }
 
+    /** Mulai tap berulang otomatis kalau tombol TAP ditahan lebih dari sesaat (bukan cuma 1x sentuh). */
+    private fun startTapRepeat(service: MobiAccessibilityService, tx: Float, ty: Float) {
+        stopTapRepeat()
+        val initialDelayMs = 350L
+        val repeatIntervalMs = 150L
+        val runnable = object : Runnable {
+            override fun run() {
+                service.performTap(tx, ty)
+                tapRepeatHandler.postDelayed(this, repeatIntervalMs)
+            }
+        }
+        tapRepeatRunnable = runnable
+        tapRepeatHandler.postDelayed(runnable, initialDelayMs)
+    }
+
+    private fun stopTapRepeat() {
+        tapRepeatRunnable?.let { tapRepeatHandler.removeCallbacks(it) }
+        tapRepeatRunnable = null
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         stopMacro() // cegah kebocoran Handler kalau tombol dihapus/overlay ditutup saat macro aktif
+        stopTapRepeat()
     }
 }

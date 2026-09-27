@@ -2,6 +2,7 @@ package com.mobibawah.app.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,12 +19,9 @@ class TermsActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.txtTermsBody).text = getString(R.string.terms_body)
 
         val checkbox = findViewById<CheckBox>(R.id.checkAgreeTerms)
-        val btnAgree = findViewById<TextView>(R.id.btnAgreeTerms)
+        val btnAgree = findViewById<Button>(R.id.btnAgreeTerms)
 
-        checkbox.setOnCheckedChangeListener { _, isChecked ->
-            btnAgree.isEnabled = isChecked
-            btnAgree.alpha = if (isChecked) 1f else 0.4f
-        }
+        checkbox.setOnCheckedChangeListener { _, isChecked -> btnAgree.isEnabled = isChecked }
 
         btnAgree.setOnClickListener {
             AppPrefs.setTermsAccepted(this)

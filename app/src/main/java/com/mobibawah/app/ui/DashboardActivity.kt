@@ -45,6 +45,9 @@ class DashboardActivity : AppCompatActivity(), InputManager.InputDeviceListener 
         inputManager = getSystemService(INPUT_SERVICE) as InputManager
 
         findViewById<ImageButton>(R.id.btnBackDashboard).setOnClickListener { finish() }
+        findViewById<android.widget.Button>(R.id.btnTesGame).setOnClickListener {
+            startActivity(android.content.Intent(this, TestGameActivity::class.java))
+        }
 
         refreshDeviceList()
     }

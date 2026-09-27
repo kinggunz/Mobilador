@@ -41,7 +41,53 @@ sama seperti aplikasi key-mapper populer lain (Octopus, Panda Keymapper, dll):
 
 Ini legal, tidak perlu root, dan berlaku umum untuk semua game/app sejenis.
 
-## Update terbaru (v7)
+## Update terbaru (v9)
+
+- **Mini-game "Lompat Kaktus"** (Dashboard → tombol "🎮 Tes Game"): wajib
+  pilih 1 tombol keyboard fisik dengan MENEKANNYA LANGSUNG (bukan pilih
+  dari daftar), lalu tekan tombol itu untuk lompat melewati kaktus yang
+  datang — kena kaktus = mati, skor naik tiap berhasil lompat. Ini bukti
+  paling nyata bahwa keyboard fisikmu terbaca benar, karena jalur
+  pembacaannya (`KeyCodeMapper`) sama persis dengan yang dipakai mapping
+  sungguhan di dalam game.
+- **Fitur Chat AI** (menu utama → "Chat AI"): mengobrol dengan layanan AI
+  lewat API `https://api.nexadev.my.id/ai/deepsek?text=...`.
+  ⚠️ **PENTING & JUJUR**: ini API PIHAK KETIGA yang TIDAK RESMI — bukan
+  dari OpenAI/Google/Anthropic/DeepSeek resmi. Tidak ada jaminan selalu
+  online, aman datanya, atau formatnya tidak berubah sewaktu-waktu.
+  Jangan kirim data pribadi/sensitif lewat fitur ini. Karena saya tidak
+  punya akses internet untuk benar-benar menguji API ini, fungsi
+  `extractReply()` di `ChatAiActivity.kt` menebak beberapa nama field
+  JSON yang umum dipakai ("result"/"message"/"response"/dst) — kalau
+  ternyata balasannya tidak muncul rapi, cek isi mentahnya yang
+  ditampilkan lalu sesuaikan nama field di fungsi itu.
+- **Semua tombol dikembalikan ke bentuk teks/persegi seperti semula**
+  (Dashboard, Profil, Pesan, Matikan, Tambah Tombol, Preset, Simpan,
+  Mulai, Ganti Password, dll) — perubahan ke tombol bulat sebelumnya
+  dibatalkan sesuai permintaan. Tombol "?" dan "▲/▼" di layar mapping
+  tetap bulat karena memang begitu sejak awal dibuat (bukan bagian dari
+  perubahan yang dibatalkan).
+- **Aplikasi dikunci landscape TOTAL lagi**: semua 11 halaman (termasuk
+  yang sempat dibebaskan rotasinya) sekarang kembali hanya bisa
+  landscape, sesuai permintaan terbaru.
+
+## Update sebelumnya
+
+- **Perbaikan untuk kasus "tombol F ditumpuk di atas tombol lompat FF,
+  ditahan buat manjat tangga"**: dulu tipe aksi **TAP** cuma menembak
+  SEKALI walau tombolnya (fisik maupun di layar) ditahan lama — jadi
+  kalau ditumpuk di atas tombol lompat dan dipakai buat manjat tangga
+  (yang butuh lompat berkali-kali), cuma tekanan pertama yang kehitung,
+  sisanya diam. Sekarang **menahan tombol TAP otomatis mengulang tap
+  terus-menerus** (baik dari keyboard fisik yang key-repeat bawaan
+  Android-nya dimanfaatkan, maupun dari jari yang ditahan di layar via
+  loop tap internal) — jadi selama ditahan, tombol lompat di baliknya
+  ikut kepencet berkali-kali otomatis. Melepas tombol langsung
+  menghentikannya.
+- Tombol HOLD/TOGGLE/MACRO tidak berubah perilakunya, cuma TAP yang
+  diperbaiki karena itu yang paling relevan untuk kasus tombol lompat.
+
+## Update sebelumnya
 
 - **Mouse kiri & kanan sekarang independen untuk drag/lihat sekitar**:
   drag pakai **klik KIRI** mouse = channel/mode lihat sekitar sendiri,

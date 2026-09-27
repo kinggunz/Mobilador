@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -41,8 +42,8 @@ class ProfileActivity : AppCompatActivity() {
         loadAvatarIfAny(imgAvatar)
         imgAvatar.setOnClickListener { pickAvatarLauncher.launch("image/*") }
 
-        findViewById<TextView>(R.id.btnGantiPassword).setOnClickListener { showChangePasswordDialog() }
-        findViewById<TextView>(R.id.btnHapusAkun).setOnClickListener { confirmDeleteAccount() }
+        findViewById<Button>(R.id.btnGantiPassword).setOnClickListener { showChangePasswordDialog() }
+        findViewById<Button>(R.id.btnHapusAkun).setOnClickListener { confirmDeleteAccount() }
     }
 
     private fun avatarFile(): File = File(filesDir, "avatar_profil.png")

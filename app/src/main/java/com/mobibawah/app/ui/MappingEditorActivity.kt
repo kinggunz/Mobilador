@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -95,13 +96,13 @@ class MappingEditorActivity : AppCompatActivity() {
         }
         imgHud = findViewById(R.id.imgHud)
         val seekUkuran = findViewById<SeekBar>(R.id.seekUkuran)
-        val btnTambah = findViewById<TextView>(R.id.btnTambahTombol)
-        val btnPreset = findViewById<TextView>(R.id.btnPresetWasd)
-        val btnSimpan = findViewById<TextView>(R.id.btnSimpanMapping)
-        val btnPilihHud = findViewById<TextView>(R.id.btnPilihHud)
-        val btnHapusHud = findViewById<TextView>(R.id.btnHapusHud)
-        val btnBagikanKode = findViewById<TextView>(R.id.btnBagikanKode)
-        val btnImporKode = findViewById<TextView>(R.id.btnImporKode)
+        val btnTambah = findViewById<Button>(R.id.btnTambahTombol)
+        val btnPreset = findViewById<Button>(R.id.btnPresetWasd)
+        val btnSimpan = findViewById<Button>(R.id.btnSimpanMapping)
+        val btnPilihHud = findViewById<Button>(R.id.btnPilihHud)
+        val btnHapusHud = findViewById<Button>(R.id.btnHapusHud)
+        val btnBagikanKode = findViewById<Button>(R.id.btnBagikanKode)
+        val btnImporKode = findViewById<Button>(R.id.btnImporKode)
         val panelBawah = findViewById<LinearLayout>(R.id.panelBawah)
         val btnToggleMenu = findViewById<TextView>(R.id.btnToggleMenu)
         val btnTutorial = findViewById<TextView>(R.id.btnTutorial)
@@ -195,7 +196,7 @@ class MappingEditorActivity : AppCompatActivity() {
             • Tap tombol yang sudah ada = ganti nama key, ganti tipe aksi, atau hapus.
 
             TIPE AKSI TOMBOL
-            • TAP: sekali sentuh sekali aksi.
+            • TAP: sekali sentuh sekali aksi — kalau DITAHAN (jari atau tombol fisik), otomatis mengulang tap terus-menerus (cocok untuk tombol yang ditumpuk di atas tombol LOMPAT game, mis. manjat tangga yang butuh lompat berkali-kali).
             • HOLD: ditahan selama jari/tombol ditekan (cocok gerak jalan W/A/S/D).
             • TOGGLE: sekali tekan = nyala terus sampai ditekan lagi.
             • MACRO: sekali tekan = tap super cepat berulang otomatis (auto-tap) sampai ditekan lagi — tombolnya tetap bisa digeser & tidak mengganggu tombol/touchpad lain.

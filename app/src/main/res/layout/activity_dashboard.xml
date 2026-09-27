@@ -117,6 +117,24 @@
                 android:textColor="@color/primary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnTesGame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/text_light"
+                android:textStyle="bold"
+                android:text="🎮 Tes Game: Lompat Kaktus" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Wajib pilih 1 tombol keyboard (tekan langsung, bukan pilih dari daftar), lalu tekan tombol itu untuk lompat lewati kaktus. Kena kaktus = mati. Kalau lompatnya responsif, itu bukti keyboardmu terbaca dengan benar."
+                android:textColor="#666666"
+                android:textSize="10sp" />
         </LinearLayout>
 
         <TextView

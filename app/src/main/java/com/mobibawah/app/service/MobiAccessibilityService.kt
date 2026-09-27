@@ -113,10 +113,19 @@ class MobiAccessibilityService : AccessibilityService() {
         val tx = mapping.targetX * screenW
         val ty = mapping.targetY * screenH
         val isFirstDown = event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0
+        val isAnyDown = event.action == KeyEvent.ACTION_DOWN // termasuk key-repeat saat ditahan
         val isUp = event.action == KeyEvent.ACTION_UP
 
         when (mapping.actionType) {
-            ActionType.TAP -> if (isFirstDown) performTap(tx, ty)
+            // PERBAIKAN: dulu TAP cuma sekali tembak (repeatCount==0), jadi
+            // kalau tombolnya ditumpuk di atas tombol LOMPAT game dan
+            // ditahan lama (mis. manjat tangga yang butuh lompat berkali-
+            // kali), cuma sentuhan pertama yang kehitung, sisanya diam.
+            // Sekarang setiap "key-repeat" bawaan Android (tombol fisik
+            // ditahan -> otomatis mengirim ACTION_DOWN berulang) ikut
+            // memicu tap baru, jadi menahan tombol = lompat terus-menerus,
+            // persis kayak nekan tombol lompat asli berkali-kali.
+            ActionType.TAP -> if (isAnyDown) performTap(tx, ty)
             ActionType.HOLD -> {
                 if (isFirstDown) startTouch(mapping.id, tx, ty)
                 if (isUp) endTouch(mapping.id)
