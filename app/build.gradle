@@ -1,21 +1,49 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-    namespace 'com.jagaanak.ortu'
-    compileSdk 34
+    namespace 'com.mobibawah.app'
+    compileSdk 35
 
     defaultConfig {
-        applicationId "com.jagaanak.ortu"
-        minSdk 24
-        targetSdk 34
+        applicationId "com.mobibawah.app"
+        minSdk 26        // Android 8.0
+        targetSdk 35      // Android 15
         versionCode 1
         versionName "1.0"
     }
+
+    // PENTING: keystore debug TETAP (disimpan di keystore/debug.keystore,
+    // ikut di-commit ke repo) supaya SEMUA build APK debug — baik dari
+    // Android Studio di komputer manapun, maupun dari GitHub Actions yang
+    // selalu jalan di mesin baru — ditandatangani dengan kunci yang SAMA.
+    //
+    // Sebelum ini, tiap build GitHub Actions otomatis membuat keystore
+    // debug BARU (beda tiap kali), sehingga APK baru dianggap "aplikasi
+    // berbeda" oleh Android dan WAJIB di-uninstall dulu sebelum install
+    // yang baru — dan uninstall itu yang selama ini menghapus akun & semua
+    // mapping tersimpan, bukan karena fitur login belum ada. Dengan
+    // signature yang konsisten, APK baru bisa di-install LANGSUNG MENIMPA
+    // yang lama (seperti update aplikasi biasa) tanpa uninstall, sehingga
+    // akun dan mapping otomatis tetap ada.
+    signingConfigs {
+        debug {
+            storeFile file("${rootDir}/keystore/debug.keystore")
+            storePassword "mobiladordebug"
+            keyAlias "mobiladordebugkey"
+            keyPassword "mobiladordebug"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -25,11 +53,16 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
-    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }

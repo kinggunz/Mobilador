@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- Area pratinjau FULL LAYAR: gambar HUD (kalau ada) mengisi penuh
+         seluruh layar (centerCrop = tidak ada bilah hitam kosong), lalu
+         semua tombol overlay digambar tepat di atasnya. Karena posisi
+         tombol disimpan sebagai PERSENTASE lebar/tinggi layar (bukan
+         piksel gambar), penempatan tetap presisi sama persis dengan saat
+         overlay sungguhan berjalan di atas game — baik saat gambar HUD
+         berukuran pas layar penuh maupun saat rasio gambarnya berbeda. -->
+    <FrameLayout
+        android:id="@+id/previewArea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgHud"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="#1A1A1A"
+            android:contentDescription="Gambar HUD acuan mapping" />
+    </FrameLayout>
+
+    <!-- Hint kecil melayang di pojok atas, tidak memakan tempat -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="10dp"
+        android:background="#99000000"
+        android:padding="8dp"
+        android:text="Geser tombol = pindah posisi. Tap tombol = ganti key/ukuran/hapus."
+        android:textColor="#DDDDDD"
+        android:textSize="10sp" />
+
+    <!-- Tombol bantuan "?" -> buka tutorial cara pakai -->
+    <TextView
+        android:id="@+id/btnTutorial"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_overlay_button"
+        android:gravity="center"
+        android:text="?"
+        android:textColor="@color/text_light"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Tombol V (▲/▼) untuk sembunyikan/tampilkan panel bawah. Dibungkus
+         satu wadah bersama panelBawah supaya tombolnya SELALU menempel
+         tepat di atas panel (persis di atas "Pilih Gambar HUD"): saat
+         panel ditutup, wadah ini otomatis mengecil jadi cuma setinggi
+         tombol ini saja, jadi tombolnya turun ke bawah layar — tap lagi
+         untuk menaikkan/membuka panelnya kembali. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/btnToggleMenu"
+            android:layout_width="52dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/shape_pull_tab"
+            android:gravity="center"
+            android:text="▼"
+            android:textColor="@color/text_light"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+
+        <!-- Panel kontrol melayang di bagian bawah layar, transparan, di atas gambar -->
+        <LinearLayout
+            android:id="@+id/panelBawah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#CC121212">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <Button
+                    android:id="@+id/btnTambahTombol"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="@string/tambah_tombol" />
+
+                <Button
+                    android:id="@+id/btnPresetWasd"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Preset WASD" />
+
+                <Button
+                    android:id="@+id/btnPresetSaya"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Preset Saya (3 Slot)" />
+
+                <Button
+                    android:id="@+id/btnPilihHud"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Pilih Gambar HUD" />
+
+                <Button
+                    android:id="@+id/btnHapusHud"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Hapus HUD" />
+
+                <Button
+                    android:id="@+id/btnBagikanKode"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="11sp"
+                    android:text="Bagikan Kode" />
+
+                <Button
+                    android:id="@+id/btnImporKode"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:text="Impor Kode" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ukuran:"
+                android:textColor="@color/text_light"
+                android:textSize="11sp" />
+
+            <SeekBar
+                android:id="@+id/seekUkuran"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSimpanMapping"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/primary"
+            android:textColor="@color/text_light"
+            android:textSize="13sp"
+            android:text="@string/simpan" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

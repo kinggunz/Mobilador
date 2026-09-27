@@ -1,0 +1,25 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Empat "tombol" ala WASD tersusun plus, melambangkan key-mapping -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,32 h16 a4,4 0 0 1 4,4 v14 h-24 v-14 a4,4 0 0 1 4,-4 z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,58 h16 a4,4 0 0 1 4,4 v14 h-24 v-14 a4,4 0 0 1 4,-4 z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,58 h16 v18 h-12 a4,4 0 0 1 -4,-4 z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72,58 h16 v14 a4,4 0 0 1 -4,4 h-12 z" />
+
+    <!-- Kursor mouse/panah, melambangkan mapping mouse & sentuh -->
+    <path
+        android:fillColor="#FF5722"
+        android:pathData="M62,44 L86,66 L76,68 L82,80 L76,83 L70,71 L62,79 Z" />
+</vector>
